@@ -11,6 +11,7 @@
   "author": "ivanflitcroft@gmail.com",
   "license": "ISC",
   "dependencies": {
+    "bulma": "^1.0.2",
     "sass": "^1.79.5"
   }
 }

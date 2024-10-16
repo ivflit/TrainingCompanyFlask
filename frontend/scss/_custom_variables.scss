@@ -1,0 +1,8 @@
+// Import Bulma's default variables
+@import "~bulma/sass/utilities/initial-variables";
+
+// Override the primary color
+$primary: #FF3860; // Change this to your desired color
+
+// Import the rest of Bulma after your overrides
+@import "~bulma/bulma";
