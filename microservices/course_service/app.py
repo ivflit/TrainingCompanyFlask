@@ -24,5 +24,12 @@ def create_course():
 def get_courses():
     return jsonify(courses), 200
 
+@app.route('/courses/<int:course_id>', methods=['GET'])
+def get_course(course_id):
+    course = courses.get(course_id)
+    if course:
+        return jsonify(course), 200
+    return jsonify({'message': 'Course not found'}), 404
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001)
