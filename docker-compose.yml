@@ -17,7 +17,7 @@ services:
 
   student_service:
     build:
-      context: ./student_service
+      context: ./microservices/student_service
     ports:
       - "5002:5000"
     networks:
@@ -25,7 +25,7 @@ services:
 
   booking_service:
     build:
-      context: ./booking_service
+      context: ./microservices/booking_service
     ports:
       - "5003:5000"
     networks:
@@ -33,7 +33,7 @@ services:
 
   course_service:
     build:
-      context: ./course_service
+      context: ./microservices/course_service
     ports:
       - "5004:5000"
     networks:
@@ -41,7 +41,7 @@ services:
 
   trainer_service:
     build:
-      context: ./trainer_service
+      context: ./microservices/trainer_service
     ports:
       - "5005:5000"
     networks:
@@ -49,7 +49,7 @@ services:
 
   schedule_service:
     build:
-      context: ./schedule_service
+      context: ./microservices/schedule_service
     ports:
       - "5006:5000"
     networks:
