@@ -24,3 +24,7 @@ def register_student():
     
     student_id_counter += 1
     return jsonify({'message': 'Student registered', 'student_id': student_id}), 201
+
+@app.route('/students', methods=['GET'])
+def get_students():
+    return jsonify(students), 200
