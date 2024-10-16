@@ -26,5 +26,10 @@ def register_trainer():
 
     trainer_id_counter += 1
     return jsonify({'message': 'Trainer registered successfully', 'trainer_id': trainer_id}), 201
+
+@app.route('/trainers', methods=['GET'])
+def get_trainers():
+    return jsonify(list(trainers.values())), 200
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5006) 
