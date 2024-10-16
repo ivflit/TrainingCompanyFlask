@@ -44,6 +44,10 @@ def manage_trainers():
     trainers = requests.get(TRAINER_SERVICE_URL).json()
     return render_template('trainers.html', trainers=trainers)
 
+@app.route('/courses', methods=['GET'])
+def view_courses():
+    courses = requests.get(COURSE_SERVICE_URL).json()
+    return render_template('courses.html', courses=courses)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5005)
