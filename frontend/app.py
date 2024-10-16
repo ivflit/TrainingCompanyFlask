@@ -29,5 +29,21 @@ def manage_students():
     students = requests.get(STUDENT_SERVICE_URL).json()
     return render_template('students.html', students=students)
 
+@app.route('/trainers', methods=['GET', 'POST'])
+def manage_trainers():
+    if request.method == 'POST':
+        data = {
+            'name': request.form['name'],
+            'preferred_cities': request.form['preferred_cities'].split(','),
+            'skills': request.form['skills'].split(',')
+        }
+        response = requests.post(TRAINER_SERVICE_URL, json=data)
+        if response.status_code == 201:
+            return redirect(url_for('manage_trainers'))
+    
+    trainers = requests.get(TRAINER_SERVICE_URL).json()
+    return render_template('trainers.html', trainers=trainers)
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5005)
