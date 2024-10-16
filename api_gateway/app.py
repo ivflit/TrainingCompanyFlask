@@ -1,10 +1,13 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify, Response
 import requests
 import os
+from dotenv import load_dotenv
+load_dotenv()
 
 app = Flask(__name__)
-
-
+print("test")
+print(os.getenv("FRONTEND_SERVICE_URL"))
+print("finish")
 FRONTEND_SERVICE_URL = os.getenv('FRONTEND_SERVICE_URL')
 STUDENT_SERVICE_URL = os.getenv('STUDENT_SERVICE_URL')
 TRAINER_SERVICE_URL = os.getenv('TRAINER_SERVICE_URL')

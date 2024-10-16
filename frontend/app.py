@@ -1,8 +1,10 @@
 import requests
 from flask import Flask, jsonify, render_template,request
 import os
+from dotenv import load_dotenv
+load_dotenv()
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static', static_url_path='/static')
 
 FRONTEND_SERVICE_URL = os.getenv('FRONTEND_SERVICE_URL')
 STUDENT_SERVICE_URL = os.getenv('STUDENT_SERVICE_URL')
@@ -10,6 +12,10 @@ TRAINER_SERVICE_URL = os.getenv('TRAINER_SERVICE_URL')
 COURSE_SERVICE_URL = os.getenv('COURSE_SERVICE_URL')
 BOOKING_SERVICE_URL = os.getenv('BOOKING_SERVICE_URL')
 
+@app.template_filter('frontend_static')
+def frontend_static(filename):
+    """Generate a full URL for static files served by the frontend service."""
+    return f"{FRONTEND_SERVICE_URL}/static/{filename}"
 
 @app.route('/index')
 def index_template():
