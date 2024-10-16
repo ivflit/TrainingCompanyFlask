@@ -1,17 +1,50 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Training Company</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-</head>
-<body>
-    <h1>Welcome to the Training Company</h1>
-    <nav>
-        <a href="{{ manage_students_url }}">Manage Students</a>
-        <a href="{{ manage_trainers_url }}">Manage Trainers</a>
-        <a href="{{ view_courses_url }}">View Courses</a>
+{% extends 'base.html' %}
+
+{% block title %}Training Company{% endblock %}
+
+{% block content %}
+<!-- Hero Section for a Stylish Intro -->
+<section class="hero is-primary is-medium">
+  <div class="hero-body">
+    <div class="container">
+      <h1 class="title is-1">Welcome to the Training Company</h1>
+      <p class="subtitle is-3">Your destination for professional growth</p>
+    </div>
+  </div>
+</section>
+
+<!-- Navigation Section -->
+<section class="section">
+  <div class="container">
+    <nav class="level">
+      <div class="level-item has-text-centered">
+        <div>
+          <p class="heading">Students</p>
+          <a href="{{ manage_students_url }}" class="button is-info is-medium">Manage Students</a>
+        </div>
+      </div>
+      <div class="level-item has-text-centered">
+        <div>
+          <p class="heading">Trainers</p>
+          <a href="{{ manage_trainers_url }}" class="button is-info is-medium">Manage Trainers</a>
+        </div>
+      </div>
+      <div class="level-item has-text-centered">
+        <div>
+          <p class="heading">Courses</p>
+          <a href="{{ view_courses_url }}" class="button is-info is-medium">View Courses</a>
+        </div>
+      </div>
     </nav>
-</body>
-</html>
+  </div>
+</section>
+
+<!-- Footer (if needed) -->
+<footer class="footer">
+  <div class="content has-text-centered">
+    <p>
+      <strong>Training Company</strong> &copy; 2024. All rights reserved.
+    </p>
+  </div>
+</footer>
+{% endblock %}

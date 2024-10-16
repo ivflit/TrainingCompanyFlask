@@ -1,25 +1,60 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage Trainers</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-</head>
-<body>
-    <h1>Manage Trainers</h1>
-    <form method="POST">
-        <input type="text" name="name" placeholder="Name" required>
-        <input type="text" name="preferred_cities" placeholder="Preferred Cities (comma separated)" required>
-        <input type="text" name="skills" placeholder="Skills (comma separated)" required>
-        <button type="submit">Add Trainer</button>
+{% extends 'base.html' %}
+
+{% block title %}Manage Trainers{% endblock %}
+
+{% block content %}
+<!-- Page Heading -->
+<section class="section">
+  <div class="container">
+    <h1 class="title is-2">Manage Trainers</h1>
+
+    <!-- Form to Add Trainers -->
+    <form method="POST" class="box">
+      <div class="field">
+        <label class="label">Name</label>
+        <div class="control">
+          <input class="input" type="text" name="name" placeholder="Name" required>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="label">Preferred Cities</label>
+        <div class="control">
+          <input class="input" type="text" name="preferred_cities" placeholder="Preferred Cities (comma separated)" required>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="label">Skills</label>
+        <div class="control">
+          <input class="input" type="text" name="skills" placeholder="Skills (comma separated)" required>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="control">
+          <button class="button is-primary" type="submit">Add Trainer</button>
+        </div>
+      </div>
     </form>
-    <h2>Registered Trainers</h2>
+
+    <!-- Registered Trainers List -->
+    <h2 class="title is-4">Registered Trainers</h2>
     <ul>
-        
+      {% if trainers %}
         {% for trainer in trainers %}
-            <li>{{ trainer.name }} (ID: {{ trainer.id }})</li>
+          <li class="box">
+            <p>
+              <strong>{{ trainer.name }}</strong> (ID: {{ trainer.id }})<br>
+              <strong>Preferred Cities:</strong> {{ ', '.join(trainer.preferred_cities) }}<br>
+              <strong>Skills:</strong> {{ ', '.join(trainer.skill_areas) }}
+            </p>
+          </li>
         {% endfor %}
+      {% else %}
+        <p>No trainers registered yet.</p>
+      {% endif %}
     </ul>
-</body>
-</html>
+  </div>
+</section>
+{% endblock %}

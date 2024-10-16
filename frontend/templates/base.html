@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}My Modern Webpage{% endblock %}</title>
+
+    <!-- Importing Bulma CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css"
+    />
+
+    <!-- Google Fonts: Using 'Poppins' for a modern look -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Custom Styles for Better Layout -->
+    <style>
+      body {
+        font-family: 'Poppins', sans-serif;
+        background-color: #f5f5f5;
+      }
+      .navbar, .footer {
+        background-color: #00d1b2;
+        color: white;
+      }
+      .container {
+        max-width: 800px;
+        margin: auto;
+        padding: 2rem;
+      }
+      .content {
+        text-align: center;
+        padding: 2rem 0;
+      }
+    </style>
+
+    {% block head %}{% endblock %}
+  </head>
+  <body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+      <div class="container">
+        <div class="navbar-brand">
+          <a class="navbar-item" href="/">
+            <strong>{% block brand %}My Site{% endblock %}</strong>
+          </a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content Section -->
+    <section class="section">
+      <div class="container">
+        <div class="content">
+          {% block content %}
+          <h1 class="title">Welcome to My Modern Webpage</h1>
+          <p class="subtitle">This is a clean and modern template using Bulma and Jinja2.</p>
+          {% endblock %}
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="content has-text-centered">
+        <p>
+          <strong>&copy; 2024</strong> by My Website. Built with
+          <a href="https://bulma.io">Bulma</a> and <a href="https://jinja.palletsprojects.com/">Jinja2</a>.
+        </p>
+      </div>
+    </footer>
+
+    {% block scripts %}{% endblock %}
+  </body>
+</html>

@@ -3,11 +3,11 @@ from flask import Flask, jsonify, render_template,request
 
 app = Flask(__name__)
 
-FRONTEND_SERVICE_URL = "http://127.0.0.1:8007"
-STUDENT_SERVICE_URL = "http://127.0.0.1:8002"
-TRAINER_SERVICE_URL = "http://127.0.0.1:8005"
-COURSE_SERVICE_URL = "http://127.0.0.1:8004"
-BOOKING_SERVICE_URL = "http://127.0.0.1:8003"
+FRONTEND_SERVICE_URL = os.environ.get('FRONTEND_SERVICE_URL')
+STUDENT_SERVICE_URL = os.environ.get('STUDENT_SERVICE_URL')
+TRAINER_SERVICE_URL = os.environ.get('TRAINER_SERVICE_URL')
+COURSE_SERVICE_URL = os.environ.get('COURSE_SERVICE_URL')
+BOOKING_SERVICE_URL = os.environ.get('BOOKING_SERVICE_URL')
 
 
 @app.route('/index')
