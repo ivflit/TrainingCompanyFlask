@@ -41,14 +41,9 @@ def manage_students():
         if response.status_code == 201:
             return redirect(url_for('manage_students'))
     
-    # Fetch the students from the Student Service
-    students = requests.get(STUDENT_SERVICE_URL).json()
-
-    # Retrieve the template from the Frontend Service
-    template_response = requests.get(f"{FRONTEND_SERVICE_URL}/students")
+    response = requests.get(f"{FRONTEND_SERVICE_URL}/students")
     
-    # Render the template by passing students as context
-    return render_template(template_response.text, students=students)
+    return Response(response.content, content_type='text/html')
 
 
 @app.route('/trainers', methods=['GET', 'POST'])
@@ -64,21 +59,17 @@ def manage_trainers():
             return redirect(url_for('manage_trainers'))
 
     response = requests.get(f"{FRONTEND_SERVICE_URL}/trainers")
-    
     return Response(response.content, content_type='text/html')
 
 
 
 @app.route('/courses', methods=['GET'])
 def view_courses():
-    # Fetch the courses from the Course Service
-    courses = requests.get(COURSE_SERVICE_URL).json()
-
-    # Retrieve the template from the Frontend Service
-    template_response = requests.get(f"{FRONTEND_SERVICE_URL}/courses")
-
-    # Render the template by passing courses as context
-    return render_template(template_response.text, courses=courses)
+    # context = {
+    #     'book_course': url_for('book_course', _external=True),
+    # }
+    response = requests.get(f"{FRONTEND_SERVICE_URL}/courses")
+    return Response(response.content, content_type='text/html')
 
 
 @app.route('/students/<int:student_id>/book', methods=['POST'])

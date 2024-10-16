@@ -3,7 +3,11 @@ from flask import Flask, jsonify, render_template,request
 
 app = Flask(__name__)
 
-TRAINER_SERVICE_URL = 'http://localhost:8005' 
+FRONTEND_SERVICE_URL = "http://127.0.0.1:8007"
+STUDENT_SERVICE_URL = "http://127.0.0.1:8002"
+TRAINER_SERVICE_URL = "http://127.0.0.1:8005"
+COURSE_SERVICE_URL = "http://127.0.0.1:8004"
+BOOKING_SERVICE_URL = "http://127.0.0.1:8003"
 
 
 @app.route('/index')
@@ -19,7 +23,8 @@ def index_template():
 
 @app.route('/students')
 def students_template():
-    return render_template('students.html')
+    students = requests.get(f"{STUDENT_SERVICE_URL}/students").json()
+    return render_template('students.html', students=students)
 
 
 @app.route('/trainers')
@@ -29,7 +34,11 @@ def trainers_template():
 
 @app.route('/courses')
 def courses_template():
-    return render_template('courses.html')
+    urls = {
+        'book_course': request.args.get('book_course')
+    }
+    courses = requests.get(f"{COURSE_SERVICE_URL}/courses").json()
+    return render_template('courses.html', courses=courses, **urls)
 
 
 if __name__ == '__main__':
