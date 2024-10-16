@@ -31,5 +31,12 @@ def register_trainer():
 def get_trainers():
     return jsonify(list(trainers.values())), 200
 
+@app.route('/trainers/<int:trainer_id>', methods=['GET'])
+def get_trainer(trainer_id):
+    trainer = trainers.get(trainer_id)
+    if not trainer:
+        return jsonify({'message': 'Trainer not found'}), 404
+    return jsonify(trainer), 200
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5006) 
