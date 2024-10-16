@@ -3,13 +3,17 @@ import requests
 
 app = Flask(__name__)
 
-COURSE_SERVICE_URL = 'http://course_service:5001/courses'
+FRONTEND_SERVICE_URL = "http://127.0.0.1:8007"
+STUDENT_SERVICE_URL = "http://127.0.0.1:8002"
+TRAINER_SERVICE_URL = "http://127.0.0.1:8005"
+COURSE_SERVICE_URL = "http://127.0.0.1:8004"
+BOOKING_SERVICE_URL = "http://127.0.0.1:8003"
 
 course_runs = {
     1: {'course_id': 1, 'date': '2024-10-01', 'capacity': 30, 'registered_students': []},
-    2: {'course_id': 1, 'date': '2024-10-15', 'capacity': 30, 'registered_students': []},
-    3: {'course_id': 2, 'date': '2024-10-05', 'capacity': 25, 'registered_students': []},
-    4: {'course_id': 2, 'date': '2024-10-20', 'capacity': 25, 'registered_students': []}
+    2: {'course_id': 1, 'date': '2024-10-18', 'capacity': 30, 'registered_students': []},
+    3: {'course_id': 2, 'date': '2024-10-08', 'capacity': 28, 'registered_students': []},
+    4: {'course_id': 2, 'date': '2024-10-20', 'capacity': 28, 'registered_students': []}
 }
 
 @app.route('/schedule', methods=['POST'])
@@ -64,4 +68,4 @@ def register_student(run_id):
     return jsonify({'message': 'Student registered', 'run_id': run_id}), 200
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5006)
+    app.run(host='0.0.0.0', port=8006)

@@ -42,7 +42,7 @@ def book_course(student_id):
     course_id = data.get('course_id')
     course_date = data.get('date')
 
-    booking_service_url = "http://booking_service:5003/bookings"
+    booking_service_url = "http://booking_service:8003/bookings"
     booking_data = {
         'student_id': student_id,
         'course_id': course_id,
@@ -56,7 +56,7 @@ def book_course(student_id):
         return jsonify({'message': 'Course booked successfully'}), 201
     elif response.status_code == 404:
         return jsonify({'message': 'Course not found or fully booked'}), 404
-    return jsonify({'message': 'Could not process the booking'}), 500
+    return jsonify({'message': 'Could not process the booking'}), 800
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5002)
+    app.run(host='0.0.0.0', port=8002)

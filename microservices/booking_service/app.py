@@ -5,7 +5,11 @@ app = Flask(__name__)
 
 bookings = []
 
-COURSES_SERVICE_URL = "http://courses_service:5001/courses"
+FRONTEND_SERVICE_URL = "http://frontend_service:8007"
+STUDENT_SERVICE_URL = "http://student_service:8002"
+TRAINER_SERVICE_URL = "http://trainer_service:8005"
+COURSE_SERVICE_URL = "http://course_service:8004"
+BOOKING_SERVICE_URL = "http://booking_service:8003"
 
 @app.route('/bookings', methods=['POST'])
 def create_booking():
@@ -15,7 +19,7 @@ def create_booking():
     course_response = requests.get(COURSES_SERVICE_URL)
     
     if course_response.status_code != 200:
-        return jsonify({'error': 'Failed to retrieve course information'}), 500
+        return jsonify({'error': 'Failed to retrieve course information'}), 800
 
     courses = course_response.json()
     course = next((c for c in courses if c['id'] == course_id), None)
@@ -38,4 +42,4 @@ def get_bookings():
     return jsonify(bookings), 200
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5003)
+    app.run(host='0.0.0.0', port=8003)

@@ -1,19 +1,28 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, redirect
 import requests
 
 app = Flask(__name__)
 
-STUDENT_SERVICE_URL = "http://student_service:5000"
-TRAINER_SERVICE_URL = "http://trainer_service:5001"
-COURSE_SERVICE_URL = "http://course_service:5002"
-BOOKING_SERVICE_URL = "http://booking_service:5003"
+
+FRONTEND_SERVICE_URL = "http://127.0.0.1:8007"
+STUDENT_SERVICE_URL = "http://127.0.0.1:8002"
+TRAINER_SERVICE_URL = "http://127.0.0.1:8005"
+COURSE_SERVICE_URL = "http://127.0.0.1:8004"
+BOOKING_SERVICE_URL = "http://127.0.0.1:8003"
+
+@app.route('/', methods=['GET'])
+def get_homepage():
+   return redirect(f"{FRONTEND_SERVICE_URL}/")
 
 # STUDENTS
-@app.route('/students', methods=['POST'])
-def register_student():
-    data = request.json
-    response = requests.post(f"{STUDENT_SERVICE_URL}/students", json=data)
-    return jsonify(response.json()), response.status_code
+@app.route('/students', methods=['GET','POST'])
+def manage_students():
+    if request.method == 'POST':
+        data = request.json
+        response = requests.post(f"{STUDENT_SERVICE_URL}/students", json=data)
+        return jsonify(response.json()), response.status_code
+
+    return redirect(f"{FRONTEND_SERVICE_URL}/students")
 
 @app.route('/students/<student_id>', methods=['GET'])
 def get_student(student_id):
@@ -21,16 +30,14 @@ def get_student(student_id):
     return jsonify(response.json()), response.status_code
 
 # TRAINERS
-@app.route('/trainers', methods=['POST'])
-def register_trainer():
-    data = request.json
-    response = requests.post(f"{TRAINER_SERVICE_URL}/trainers", json=data)
-    return jsonify(response.json()), response.status_code
+@app.route('/trainers', methods=['GET', 'POST'])
+def manage_trainers():
+    if request.method == 'POST':
+        data = request.json
+        response = requests.post(f"{TRAINER_SERVICE_URL}/trainers", json=data)
+        return jsonify(response.json()), response.status_code
 
-@app.route('/trainers', methods=['GET'])
-def get_trainers():
-    response = requests.get(f"{TRAINER_SERVICE_URL}/trainers")
-    return jsonify(response.json()), response.status_code
+    return redirect(f"{FRONTEND_SERVICE_URL}/trainers")
 
 # COURSES
 @app.route('/courses', methods=['POST'])
@@ -41,8 +48,7 @@ def register_course():
 
 @app.route('/courses', methods=['GET'])
 def get_courses():
-    response = requests.get(f"{COURSE_SERVICE_URL}/courses")
-    return jsonify(response.json()), response.status_code
+    return redirect(f"{FRONTEND_SERVICE_URL}/courses")
 
 # BOOK COURSE
 @app.route('/booking', methods=['POST'])
@@ -58,4 +64,4 @@ def check_availability(course_id):
     return jsonify(response.json()), response.status_code
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=8000)

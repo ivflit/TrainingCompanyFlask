@@ -3,10 +3,11 @@ import requests
 
 app = Flask(__name__)
 
-STUDENT_SERVICE_URL = "http://student_service:5003/students"
-TRAINER_SERVICE_URL = "http://trainer_service:5004/trainers"
-COURSE_SERVICE_URL = "http://course_service:5001/courses"
-BOOKING_SERVICE_URL = "http://booking_service:5002/students"
+FRONTEND_SERVICE_URL = "http://127.0.0.1:8007"
+STUDENT_SERVICE_URL = "http://127.0.0.1:8002"
+TRAINER_SERVICE_URL = "http://127.0.0.1:8005"
+COURSE_SERVICE_URL = "http://127.0.0.1:8004"
+BOOKING_SERVICE_URL = "http://127.0.0.1:8003"
 
 @app.route('/')
 def index():
@@ -61,4 +62,4 @@ def book_course(student_id):
     return "Booking failed!", 400
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5007)
+    app.run(host='0.0.0.0', port=8007)
