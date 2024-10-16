@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Courses</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <h1>Available Courses</h1>
+    <ul>
+        {% for course in courses %}
+            <li>
+                {{ course.name }} - {{ course.duration }} - Skills: {{ ', '.join(course.skills) }}
+                <form method="POST" action="{{ url_for('book_course', student_id=student_id) }}">
+                    <input type="hidden" name="course_id" value="{{ course.id }}">
+                    <input type="date" name="date" required>
+                    <button type="submit">Book Course</button>
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
