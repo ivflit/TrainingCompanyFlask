@@ -1,4 +1,4 @@
-FROM python:3.10-slim
+FROM python:3.11
 # Tells python not to generate .pyc
 ENV PYTHONDONTWRITEBYTECODE=1 
 # Tells Python to run in unbuffered mode - makes output appear immediately
