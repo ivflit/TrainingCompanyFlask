@@ -28,3 +28,10 @@ def register_student():
 @app.route('/students', methods=['GET'])
 def get_students():
     return jsonify(students), 200
+
+@app.route('/students/<int:student_id>', methods=['GET'])
+def get_student(student_id):
+    student = students.get(student_id)
+    if student:
+        return jsonify(student), 200
+    return jsonify({'message': 'Student not found'}), 404
