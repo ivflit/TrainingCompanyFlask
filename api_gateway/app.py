@@ -32,5 +32,17 @@ def get_trainers():
     response = requests.get(f"{TRAINER_SERVICE_URL}/trainers")
     return jsonify(response.json()), response.status_code
 
+# COURSES
+@app.route('/courses', methods=['POST'])
+def register_course():
+    data = request.json
+    response = requests.post(f"{COURSE_SERVICE_URL}/courses", json=data)
+    return jsonify(response.json()), response.status_code
+
+@app.route('/courses', methods=['GET'])
+def get_courses():
+    response = requests.get(f"{COURSE_SERVICE_URL}/courses")
+    return jsonify(response.json()), response.status_code
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
