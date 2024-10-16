@@ -1,0 +1,16 @@
+{
+  "name": "scss",
+  "version": "1.0.0",
+  "description": "scss styling ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "sass --no-source-map styles.scss:../static/css/styles.css",
+    "watch": "npm run build -- --watch"
+  },
+  "author": "ivanflitcroft@gmail.com",
+  "license": "ISC",
+  "dependencies": {
+    "sass": "^1.79.5"
+  }
+}
