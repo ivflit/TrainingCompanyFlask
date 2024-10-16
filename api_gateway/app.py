@@ -44,5 +44,18 @@ def get_courses():
     response = requests.get(f"{COURSE_SERVICE_URL}/courses")
     return jsonify(response.json()), response.status_code
 
+# BOOK COURSE
+@app.route('/booking', methods=['POST'])
+def book_course():
+    data = request.json
+    response = requests.post(f"{BOOKING_SERVICE_URL}/booking", json=data)
+    return jsonify(response.json()), response.status_code
+
+# CHECK COURSE AVAILABILTIY
+@app.route('/courses/<course_id>/availability', methods=['GET'])
+def check_availability(course_id):
+    response = requests.get(f"{BOOKING_SERVICE_URL}/courses/{course_id}/availability")
+    return jsonify(response.json()), response.status_code
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
