@@ -9,5 +9,16 @@ courses = {
     2: {'name': 'Java Fundamentals', 'duration': '6 weeks', 'skills': ['Java', 'OOP']}
 }
 
+@app.route('/courses', methods=['POST'])
+def create_course():
+    data = request.get_json()
+    course_id = max(courses.keys()) + 1
+    courses[course_id] = {
+        'name': data['name'],
+        'duration': data['duration'],
+        'skills': data['skills']
+    }
+    return jsonify({'message': 'Course created', 'course_id': course_id}), 201
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001)
