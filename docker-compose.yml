@@ -14,6 +14,8 @@ services:
       - schedule_service
     networks:
       - training-network
+    env_file:
+      - ./.env 
 
   student_service:
     build:
@@ -54,6 +56,8 @@ services:
       - "8006:8000"
     networks:
       - training-network
+    env_file:
+      - ./.env
 
   frontend:
     build:
@@ -62,8 +66,9 @@ services:
       - "8007:8000"
     networks:
       - training-network
+    env_file:
+      - ./.env
 
 networks:
   training-network:
     driver: bridge
-
