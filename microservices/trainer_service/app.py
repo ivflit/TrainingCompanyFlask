@@ -2,8 +2,28 @@ from flask import Flask, jsonify, request
 
 app = Flask(__name__)
 
-trainers = {}
-trainer_id_counter = 1 
+trainers = {
+    1: {
+        'id': 1,
+        'name': 'Alice Smith',
+        'preferred_cities': ['New York', 'Los Angeles'],
+        'skill_areas': ['Python', 'Data Science']
+    },
+    2: {
+        'id': 2,
+        'name': 'Bob Johnson',
+        'preferred_cities': ['Chicago', 'San Francisco'],
+        'skill_areas': ['Java', 'Web Development']
+    },
+    3: {
+        'id': 3,
+        'name': 'Charlie Brown',
+        'preferred_cities': ['Miami', 'Seattle'],
+        'skill_areas': ['C++', 'Machine Learning']
+    }
+}
+
+trainer_id_counter = len(trainers) + 1 
 
 @app.route('/trainers', methods=['POST'])
 def register_trainer():

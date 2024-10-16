@@ -14,9 +14,9 @@
         <input type="text" name="skills" placeholder="Skills (comma separated)" required>
         <button type="submit">Add Trainer</button>
     </form>
-
     <h2>Registered Trainers</h2>
     <ul>
+        
         {% for trainer in trainers %}
             <li>{{ trainer.name }} (ID: {{ trainer.id }})</li>
         {% endfor %}
