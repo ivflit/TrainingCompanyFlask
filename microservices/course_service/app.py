@@ -20,5 +20,9 @@ def create_course():
     }
     return jsonify({'message': 'Course created', 'course_id': course_id}), 201
 
+@app.route('/courses', methods=['GET'])
+def get_courses():
+    return jsonify(courses), 200
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001)
