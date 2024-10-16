@@ -1,1 +1,69 @@
+version: '3.8'
+
+services:
+  api_gateway:
+    build:
+      context: ./api_gateway
+    ports:
+      - "5000:5000"
+    depends_on:
+      - student_service
+      - booking_service
+      - course_service
+      - trainer_service
+      - schedule_service
+    networks:
+      - training-network
+
+  student_service:
+    build:
+      context: ./student_service
+    ports:
+      - "5002:5000"
+    networks:
+      - training-network
+
+  booking_service:
+    build:
+      context: ./booking_service
+    ports:
+      - "5003:5000"
+    networks:
+      - training-network
+
+  course_service:
+    build:
+      context: ./course_service
+    ports:
+      - "5004:5000"
+    networks:
+      - training-network
+
+  trainer_service:
+    build:
+      context: ./trainer_service
+    ports:
+      - "5005:5000"
+    networks:
+      - training-network
+
+  schedule_service:
+    build:
+      context: ./schedule_service
+    ports:
+      - "5006:5000"
+    networks:
+      - training-network
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "5007:5000"
+    networks:
+      - training-network
+
+networks:
+  training-network:
+    driver: bridge
 

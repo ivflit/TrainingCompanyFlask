@@ -61,4 +61,4 @@ def book_course(student_id):
     return "Booking failed!", 400
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5005)
+    app.run(host='0.0.0.0', port=5007)

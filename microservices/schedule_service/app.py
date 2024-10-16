@@ -64,4 +64,4 @@ def register_student(run_id):
     return jsonify({'message': 'Student registered', 'run_id': run_id}), 200
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5003)
+    app.run(host='0.0.0.0', port=5006)

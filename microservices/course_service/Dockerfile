@@ -4,5 +4,5 @@ ENV PYTHONUNBUFFERED=1
 WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
-EXPOSE 5001
+EXPOSE 5004
 CMD ["python", "app.py"]
