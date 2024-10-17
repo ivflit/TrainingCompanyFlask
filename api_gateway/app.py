@@ -1,10 +1,11 @@
-from flask import Flask, render_template, request, redirect, url_for, jsonify, Response
+from flask import Flask, render_template, request, redirect, url_for, jsonify, Response, flash
 import requests
 import os
 from dotenv import load_dotenv
 load_dotenv()
 
 app = Flask(__name__)
+app.secret_key = os.getenv('SECRET_KEY')
 print("test")
 print(os.getenv("FRONTEND_SERVICE_URL"))
 print("finish")
@@ -57,12 +58,13 @@ def manage_students():
 @app.route('/trainers', methods=['GET', 'POST'])
 def manage_trainers():
     if request.method == 'POST':
+        print(TRAINER_SERVICE_URL)
         data = {
             'name': request.form['name'],
             'preferred_cities': request.form['preferred_cities'].split(','),
             'skills': request.form['skills'].split(',')
         }
-        response = requests.post(TRAINER_SERVICE_URL, json=data)
+        response = requests.post(f"{TRAINER_SERVICE_URL}/trainers", json=data)
         if response.status_code == 201:
             return redirect(url_for('manage_trainers'))
 

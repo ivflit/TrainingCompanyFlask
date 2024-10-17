@@ -31,7 +31,7 @@ def register_trainer():
     data = request.get_json()
     name = data.get('name')
     preferred_cities = data.get('preferred_cities', [])
-    skill_areas = data.get('skill_areas', [])
+    skill_areas = data.get('skills', [])
 
     if not name or not skill_areas:
         return jsonify({'message': 'Name and skill areas are required.'}), 400

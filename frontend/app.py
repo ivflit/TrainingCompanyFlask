@@ -28,17 +28,8 @@ def index_template():
             'view_courses_url': request.args.get('view_courses_url')
         }
 
-@app.route('/students', methods=['GET', 'POST'])
+@app.route('/students', methods=['GET'])
 def students_template():
-    if request.method == 'POST':
-        print(request)
-        form_data = request.data
-        response = requests.post(f"{STUDENT_SERVICE_URL}/students", json=form_data)
-        if response.status_code == 201:
-            flash('Student successfully registered!', 'success')
-        else:
-            flash('Error registering student. Please try again.', 'error')
-
     # Fetch the list of students from the student service
     students_dict = requests.get(f"{STUDENT_SERVICE_URL}/students").json()
     students = list(students_dict.values())
