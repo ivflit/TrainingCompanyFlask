@@ -13,10 +13,8 @@ def get_trainers():
     try:
         response = trainers_table.scan()  # Get all items from DynamoDB
         trainers = response.get('Items', [])
-        logger.debug(f"Trainers found: {trainers}")
         return jsonify(trainers), 200
     except ClientError as e:
-        logger.error(f"Error: {e.response['Error']['Message']}")
         return jsonify({'message': f"Error retrieving trainers: {e.response['Error']['Message']}"}), 500
 
 # Retrieve a specific trainer by ID
