@@ -1,16 +1,19 @@
 import requests
-from flask import Flask, jsonify, render_template,request
+from flask import Flask, jsonify, render_template, request, redirect, url_for, flash
 import os
 from dotenv import load_dotenv
+
 load_dotenv()
 
 app = Flask(__name__, static_folder='static', static_url_path='/static')
+app.secret_key = 'your_secret_key'  # For flash messages
 
 FRONTEND_SERVICE_URL = os.getenv('FRONTEND_SERVICE_URL')
 STUDENT_SERVICE_URL = os.getenv('STUDENT_SERVICE_URL')
 TRAINER_SERVICE_URL = os.getenv('TRAINER_SERVICE_URL')
 COURSE_SERVICE_URL = os.getenv('COURSE_SERVICE_URL')
 BOOKING_SERVICE_URL = os.getenv('BOOKING_SERVICE_URL')
+
 
 @app.template_filter('frontend_static')
 def frontend_static(filename):
@@ -24,13 +27,22 @@ def index_template():
             'manage_trainers_url': request.args.get('manage_trainers_url'),
             'view_courses_url': request.args.get('view_courses_url')
         }
-    
-    return render_template('index.html', **urls)
 
-
-@app.route('/students')
+@app.route('/students', methods=['GET', 'POST'])
 def students_template():
-    students = requests.get(f"{STUDENT_SERVICE_URL}/students").json()
+    if request.method == 'POST':
+        print(request)
+        form_data = request.data
+        response = requests.post(f"{STUDENT_SERVICE_URL}/students", json=form_data)
+        if response.status_code == 201:
+            flash('Student successfully registered!', 'success')
+        else:
+            flash('Error registering student. Please try again.', 'error')
+
+    # Fetch the list of students from the student service
+    students_dict = requests.get(f"{STUDENT_SERVICE_URL}/students").json()
+    students = list(students_dict.values())
+    # Render the template with the list of students and form
     return render_template('students.html', students=students)
 
 
@@ -38,6 +50,7 @@ def students_template():
 def trainers_template():
     trainers = requests.get(f"{TRAINER_SERVICE_URL}/trainers").json()
     return render_template('trainers.html', trainers=trainers)
+
 
 @app.route('/courses')
 def courses_template():

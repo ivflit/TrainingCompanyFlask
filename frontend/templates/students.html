@@ -3,13 +3,55 @@
 {% block title %}Manage Students{% endblock %}
 
 {% block content %}
-<!-- Page Heading -->
+<!-- Flash messages for form feedback -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="notification is-{{ category }}">
+      {% for category, message in messages %}
+        <p>{{ message }}</p>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+<!-- Students List -->
 <section class="section">
   <div class="container">
-    <h1 class="title is-2">Manage Students</h1>
+    <h1 class="title">Manage Students</h1>
 
-    <!-- Form to Add Students -->
-    <form method="POST" class="box">
+    <!-- Display the list of students -->
+    <table class="table is-striped is-hoverable">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Age</th>
+          <th>Company</th>
+          <th>Level</th>
+          <th>Stream</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for student in students %}
+        <tr>
+          <td>{{ student.name }}</td>
+          <td>{{ student.age }}</td>
+          <td>{{ student.company }}</td>
+          <td>{{ student.level }}</td>
+          <td>{{ student.stream }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- Add Student Form -->
+<section class="section">
+  <div class="container">
+    <h2 class="title">Add a New Student</h2>
+
+    <!-- Form to Add New Student -->
+    <form method="POST" action="{{ url_for('students_template') }}" class="box">
       <div class="field">
         <label class="label">Name</label>
         <div class="control">
@@ -51,23 +93,6 @@
         </div>
       </div>
     </form>
-
-    <!-- Registered Students List -->
-    <h2 class="title is-4">Registered Students</h2>
-    <ul>
-      {% if students %}
-        {% for student in students %}
-          <li class="box">
-            <p>
-              <strong>{{ student.name }}</strong> (Age: {{ student.age }}) - {{ student.company }}<br>
-              Level: {{ student.level }} | Stream: {{ student.stream }}
-            </p>
-          </li>
-        {% endfor %}
-      {% else %}
-        <p>No students registered yet.</p>
-      {% endif %}
-    </ul>
   </div>
 </section>
 {% endblock %}

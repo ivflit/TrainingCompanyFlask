@@ -13,6 +13,7 @@ STUDENT_SERVICE_URL = os.getenv('STUDENT_SERVICE_URL')
 TRAINER_SERVICE_URL = os.getenv('TRAINER_SERVICE_URL')
 COURSE_SERVICE_URL = os.getenv('COURSE_SERVICE_URL')
 BOOKING_SERVICE_URL = os.getenv('BOOKING_SERVICE_URL')
+API_GATEWAY_URL = os.getenv('API_GATEWAY_URL')
 
 
 @app.route('/')
@@ -33,7 +34,6 @@ def index():
 @app.route('/students', methods=['GET', 'POST'])
 def manage_students():
     if request.method == 'POST':
-        # Send the data to the Student Service
         data = {
             'name': request.form['name'],
             'age': request.form['age'],
@@ -41,12 +41,16 @@ def manage_students():
             'level': request.form['level'],
             'stream': request.form['stream']
         }
-        response = requests.post(STUDENT_SERVICE_URL, json=data)
+        
+        response = requests.post(f"{STUDENT_SERVICE_URL}/students", json=data)
+        
         if response.status_code == 201:
             return redirect(url_for('manage_students'))
-    
+        else:
+            return jsonify({"error": "Failed to add student"}), 500
+
+    # GET 
     response = requests.get(f"{FRONTEND_SERVICE_URL}/students")
-    
     return Response(response.content, content_type='text/html')
 
 
