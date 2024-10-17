@@ -20,20 +20,20 @@ def frontend_static(filename):
     """Generate a full URL for static files served by the frontend service."""
     return f"{FRONTEND_SERVICE_URL}/static/{filename}"
 
-@app.route('/index')
+@app.route('/')
 def index_template():
     urls = {
             'manage_students_url': request.args.get('manage_students_url'),
             'manage_trainers_url': request.args.get('manage_trainers_url'),
-            'view_courses_url': request.args.get('view_courses_url')
+            'manage_courses_url': request.args.get('manage_courses_url')
         }
+    return render_template('index.html', **urls)
+    
 
 @app.route('/students', methods=['GET'])
 def students_template():
-    # Fetch the list of students from the student service
     students_dict = requests.get(f"{STUDENT_SERVICE_URL}/students").json()
     students = list(students_dict.values())
-    # Render the template with the list of students and form
     return render_template('students.html', students=students)
 
 
@@ -45,11 +45,8 @@ def trainers_template():
 
 @app.route('/courses')
 def courses_template():
-    urls = {
-        'book_course': request.args.get('book_course')
-    }
     courses = requests.get(f"{COURSE_SERVICE_URL}/courses").json()
-    return render_template('courses.html', courses=courses, **urls)
+    return render_template('courses.html', courses=courses)
 
 
 if __name__ == '__main__':

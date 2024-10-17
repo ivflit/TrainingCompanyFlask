@@ -22,13 +22,10 @@ def index():
     context = {
         'manage_students_url': url_for('manage_students', _external=True),
         'manage_trainers_url': url_for('manage_trainers', _external=True),
-        'view_courses_url': url_for('view_courses', _external=True)
+        'manage_courses_url': url_for('manage_courses', _external=True)
     }
-
-    # Send the context (URLs) as query parameters to the frontend service
-    response = requests.get(f"{FRONTEND_SERVICE_URL}/index", params=context)
-    
-    # Return the HTML from the frontend service
+    print(context)
+    response = requests.get(f"{FRONTEND_SERVICE_URL}/", params=context)
     return Response(response.content, content_type='text/html')
 
 
@@ -72,12 +69,26 @@ def manage_trainers():
     return Response(response.content, content_type='text/html')
 
 
+@app.route('/courses', methods=['GET', 'POST'])
+def manage_courses():
+    if request.method == 'POST':
+        data = {
+            'name': request.form['name'],
+            'duration': request.form['duration'],
+            'skills': request.form['skills'].split(','),  # Assume skills are entered as comma-separated values
+            'price': request.form['price']
+        }
+        
+        response = requests.post(f"{COURSE_SERVICE_URL}/courses", json=data)
+        
+        if response.status_code == 201:
+            flash('Course created successfully!', 'success')
+            return redirect(url_for('manage_courses'))
+        else:
+            flash('Failed to create course. Please try again.', 'error')
+            return redirect(url_for('manage_courses'))
 
-@app.route('/courses', methods=['GET'])
-def view_courses():
-    # context = {
-    #     'book_course': url_for('book_course', _external=True),
-    # }
+    # GET method to retrieve existing courses
     response = requests.get(f"{FRONTEND_SERVICE_URL}/courses")
     return Response(response.content, content_type='text/html')
 

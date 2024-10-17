@@ -5,20 +5,23 @@ app = Flask(__name__)
 CORS(app)
 
 courses = [
-    {'id': 1, 'name': 'Python Basics', 'duration': '4 weeks', 'skills': ['Python', 'APIs']},
-    {'id': 2, 'name': 'Java Fundamentals', 'duration': '6 weeks', 'skills': ['Java', 'OOP']}
+    {'id': 1, 'name': 'Python Basics', 'duration': '4 weeks', 'skills': ['Python', 'APIs'], 'price': 200},
+    {'id': 2, 'name': 'Java Fundamentals', 'duration': '6 weeks', 'skills': ['Java', 'OOP'], 'price': 300}
 ]
 
 @app.route('/courses', methods=['POST'])
 def create_course():
     data = request.get_json()
-    course_id = max(courses.keys()) + 1
-    courses[course_id] = {
+    # Generate a new course ID
+    course_id = len(courses) + 1  # This is a simpler way to get the next ID
+    new_course = {
         'id': course_id,
         'name': data['name'],
         'duration': data['duration'],
-        'skills': data['skills']
+        'skills': data['skills'],
+        'price': data['price']  # Include price from the request data
     }
+    courses.append(new_course)  # Append the new course to the list
     return jsonify({'message': 'Course created', 'course_id': course_id}), 201
 
 @app.route('/courses', methods=['GET'])
@@ -27,7 +30,8 @@ def get_courses():
 
 @app.route('/courses/<int:course_id>', methods=['GET'])
 def get_course(course_id):
-    course = courses.get(course_id)
+    # Use list comprehension to find the course by ID
+    course = next((course for course in courses if course['id'] == course_id), None)
     if course:
         return jsonify(course), 200
     return jsonify({'message': 'Course not found'}), 404

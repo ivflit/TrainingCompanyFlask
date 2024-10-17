@@ -1,43 +1,67 @@
 {% extends 'base.html' %}
 
-{% block title %}View Courses{% endblock %}
+{% block title %}Manage Courses{% endblock %}
 
 {% block content %}
   <h1 class="title is-2">Available Courses</h1>
+
   <div class="box">
+    <h2 class="subtitle is-4">Create a New Course</h2>
+    <form method="POST" action="{{ url_for('courses_template') }}">
+      <div class="field">
+        <label class="label" for="course_name">Course Name</label>
+        <div class="control">
+          <input class="input" type="text" id="course_name" name="name" required placeholder="Enter course name">
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="label" for="duration">Duration</label>
+        <div class="control">
+          <input class="input" type="text" id="duration" name="duration" required placeholder="Enter course duration">
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="label" for="skills">Skills</label>
+        <div class="control">
+          <input class="input" type="text" id="skills" name="skills" required placeholder="Enter skills (comma-separated)">
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="label" for="price">Price</label>
+        <div class="control">
+          <input class="input" type="number" id="price" name="price" required placeholder="Enter course price">
+        </div>
+      </div>
+
+      <div class="control">
+        <button class="button is-primary" type="submit">
+          Create Course
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <div class="box">
+    <h2 class="subtitle is-4">Existing Courses</h2>
     <ul>
       {% for course in courses %}
         <li class="box">
           <div class="content">
-            <h2 class="subtitle is-4">{{ course.name }}</h2>
+            <h3 class="subtitle is-5">{{ course.name }}</h3>
             <p><strong>Duration:</strong> {{ course.duration }}</p>
-            <p><strong>Skills:</strong> {{ ', '.join(course.skills) }}</p>
-
-            <!-- Booking Form -->
-            <form method="POST" class="field is-grouped">
-              <input type="hidden" name="course_id" value="{{ course.id }}">
-
-              <!-- Date Input -->
-              <div class="control">
-                <input
-                  class="input"
-                  type="date"
-                  name="date"
-                  required
-                  placeholder="Choose a date"
-                >
-              </div>
-
-              <!-- Submit Button -->
-              <div class="control">
-                <button class="button is-primary" type="submit">
-                  Book Course
-                </button>
-              </div>
-            </form>
+            <p><strong>Skills:</strong> {{ course.skills | join(', ') }}</p>
+            <p><strong>Price:</strong> {{ course.price }}</p>
           </div>
         </li>
       {% endfor %}
     </ul>
+  </div>
+  <div class="control">
+    <a href="{{ url_for('index_template') }}" class="button is-link">
+      Back to Home
+    </a>
   </div>
 {% endblock %}
