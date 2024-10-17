@@ -8,10 +8,6 @@ app = Flask(__name__)
 dynamodb = boto3.resource('dynamodb', region_name='us-west-2')
 trainers_table = dynamodb.Table('Trainers') 
 
-import logging
-logging.basicConfig(level=logging.DEBUG)
-logger = logging.getLogger(__name__)
-
 @app.route('/trainers', methods=['GET'])
 def get_trainers():
     try:
@@ -63,7 +59,6 @@ def register_trainer():
         trainers_table.put_item(Item=trainer)
         return jsonify({'message': 'Trainer registered successfully', 'trainer_id': trainer_id}), 201
     except ClientError as e:
-        logger.error(f"Error registering trainer: {e.response['Error']}")
         return jsonify({'message': f"Error registering trainer: {e.response['Error']['Message']}"}), 500
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8005)
