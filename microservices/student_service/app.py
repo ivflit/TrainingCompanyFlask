@@ -1,30 +1,59 @@
 from flask import Flask, jsonify, request
 import requests
 from flask_cors import CORS
+import boto3
+from botocore.exceptions import ClientError
 
 app = Flask(__name__)
 CORS(app)
 
-# Use a dictionary to store students with their IDs as keys
-students = {
-    1: {'name': 'John Doe', 'age': 21, 'company': 'TechCorp', 'level': 'Undergraduate', 'stream': 'Computer Science'},
-    2: {'name': 'Jane Smith', 'age': 22, 'company': 'Health Inc.', 'level': 'Undergraduate', 'stream': 'Biology'},
-    3: {'name': 'Alice Johnson', 'age': 23, 'company': 'Finance Co.', 'level': 'Graduate', 'stream': 'Economics'},
-    4: {'name': 'Bob Brown', 'age': 20, 'company': 'Marketing LLC', 'level': 'Undergraduate', 'stream': 'Business'},
-    5: {'name': 'Charlie Davis', 'age': 24, 'company': 'AI Solutions', 'level': 'Graduate', 'stream': 'Data Science'},
-}
 
-# Set the student_id_counter to the next available ID
-student_id_counter = len(students) + 1
+# Initialize DynamoDB resource
+dynamodb = boto3.resource('dynamodb', region_name='us-west-2')
+students_table = dynamodb.Table('Students')  # Use the actual table name
+
+# Use a dictionary to store students with their IDs as keys
+# students = {
+#     1: {'name': 'John Doe', 'age': 21, 'company': 'TechCorp', 'level': 'Undergraduate', 'stream': 'Computer Science'},
+#     2: {'name': 'Jane Smith', 'age': 22, 'company': 'Health Inc.', 'level': 'Undergraduate', 'stream': 'Biology'},
+#     3: {'name': 'Alice Johnson', 'age': 23, 'company': 'Finance Co.', 'level': 'Graduate', 'stream': 'Economics'},
+#     4: {'name': 'Bob Brown', 'age': 20, 'company': 'Marketing LLC', 'level': 'Undergraduate', 'stream': 'Business'},
+#     5: {'name': 'Charlie Davis', 'age': 24, 'company': 'AI Solutions', 'level': 'Graduate', 'stream': 'Data Science'},
+# }
 
 @app.route('/students', methods=['POST'])
 def register_student():
-    global student_id_counter
+    # data = request.get_json()
+
+    # # Create a new student entry with a unique ID
+    # student_id = student_id_counter
+    # students[student_id] = {
+    #     'name': data['name'],
+    #     'age': data['age'],
+    #     'company': data['company'],
+    #     'level': data['level'],
+    #     'stream': data['stream']
+    # }
+
+    # student_id_counter += 1  # Increment the student ID counter
+    # return jsonify({'message': 'Student registered', 'student_id': student_id}), 201
     data = request.get_json()
 
-    # Create a new student entry with a unique ID
-    student_id = student_id_counter
-    students[student_id] = {
+    # Validate input data
+    if not all(key in data for key in ['name', 'age', 'company', 'level', 'stream']):
+        return jsonify({'message': 'Name, age, company, and level , stream are required.'}), 400
+
+    # Generate a new course ID (you might want to use UUID or a better ID generation strategy)
+    try:
+        response = students_table.scan()  # Scan to get existing students
+        students = response.get('Items', [])
+        student_id = len(students) + 1  # This is a simple way to get the next ID
+    except ClientError as e:
+        return jsonify({'message': f"Error retrieving students: {e.response['Error']['Message']}"}), 500
+
+    # Create a new student item
+    new_student = {
+        'student_id': student_id,
         'name': data['name'],
         'age': data['age'],
         'company': data['company'],
@@ -32,20 +61,35 @@ def register_student():
         'stream': data['stream']
     }
 
-    student_id_counter += 1  # Increment the student ID counter
-    return jsonify({'message': 'Student registered', 'student_id': student_id}), 201
+    try:
+        students_table.put_item(Item=new_student)  # Add the new student to DynamoDB
+        return jsonify({'message': 'student created', 'student_id': student_id}), 201
+    except ClientError as e:
+        return jsonify({'message': f"Error creating student: {e.response['Error']['Message']}"}), 500
 
 @app.route('/students', methods=['GET'])
 def get_students():
-    # Return all students as a list of dictionaries
-    return jsonify(students), 200
+    try:
+        response = students_table.scan()  # Get all students from DynamoDB
+        students = response.get('Items', [])
+        print(students)
+        print("AAA")
+        print(jsonify(students))
+        return jsonify(students), 200
+    except ClientError as e:
+        return jsonify({'message': f"Error retrieving students: {e.response['Error']['Message']}"}), 500
+
 
 @app.route('/students/<int:student_id>', methods=['GET'])
 def get_student(student_id):
-    student = students.get(student_id)
-    if student:
+    try:
+        response = students_table.get_item(Key={'student_id': student_id})  # Retrieve student by student_id
+        student = response.get('Item')
+        if not student:
+            return jsonify({'message': 'student not found'}), 404
         return jsonify(student), 200
-    return jsonify({'message': 'Student not found'}), 404
+    except ClientError as e:
+        return jsonify({'message': f"Error retrieving student: {e.response['Error']['Message']}"}), 500
 
 @app.route('/students/<int:student_id>/book', methods=['POST'])
 def book_course(student_id):

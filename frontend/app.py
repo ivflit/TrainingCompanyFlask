@@ -32,8 +32,7 @@ def index_template():
 
 @app.route('/students', methods=['GET'])
 def students_template():
-    students_dict = requests.get(f"{STUDENT_SERVICE_URL}/students").json()
-    students = list(students_dict.values())
+    students = requests.get(f"{STUDENT_SERVICE_URL}/students").json()
     return render_template('students.html', students=students)
 
 
