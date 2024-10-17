@@ -113,5 +113,13 @@ def book_course(student_id):
         return jsonify({'message': 'Course not found or fully booked'}), 404
     return jsonify({'message': 'Could not process the booking'}), 500
 
+@app.route('/students/<int:student_id>', methods=['DELETE'])
+def delete_student(student_id):
+    try:
+        response = students_table.delete_item(Key={'student_id': student_id})  # Delete the student
+        return jsonify({'message': 'student deleted successfully.'}), 200
+    except ClientError as e:
+        return jsonify({'message': f"Error deleting student: {e.response['Error']['Message']}"}), 500
+    
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8002)

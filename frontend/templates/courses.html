@@ -55,6 +55,11 @@
             <p><strong>Skills:</strong> {{ course.skills | join(', ') }}</p>
             <p><strong>Price:</strong> {{ course.price }}</p>
           </div>
+          <form method="POST" action="{{ url_for('courses_template', course_id=course.course_id) }}">
+            <input type="hidden" name="_method" value="DELETE">
+            <button type="submit" class="button is-danger">Delete</button>
+          </form>
+        
         </li>
       {% endfor %}
     </ul>

@@ -32,6 +32,10 @@ def index():
 @app.route('/students', methods=['GET', 'POST'])
 def manage_students():
     if request.method == 'POST':
+        if request.args.get('student_id'):
+            # DELETE STUDENT
+            response = requests.delete(f"{STUDENT_SERVICE_URL}/students/{request.args.get('student_id')}")
+            return redirect(url_for('manage_students'))
         data = {
             'name': request.form['name'],
             'age': request.form['age'],
@@ -55,6 +59,10 @@ def manage_students():
 @app.route('/trainers', methods=['GET', 'POST'])
 def manage_trainers():
     if request.method == 'POST':
+        if request.args.get('trainer_id'):
+            # DELETE TRAINER
+            response = requests.delete(f"{TRAINER_SERVICE_URL}/trainers/{request.args.get('trainer_id')}")
+            return redirect(url_for('manage_trainers'))
         print(TRAINER_SERVICE_URL)
         data = {
             'name': request.form['name'],
@@ -72,6 +80,11 @@ def manage_trainers():
 @app.route('/courses', methods=['GET', 'POST'])
 def manage_courses():
     if request.method == 'POST':
+        if request.args.get('course_id'):
+            # DELETE COURSE
+            response = requests.delete(f"{COURSE_SERVICE_URL}/courses/{request.args.get('course_id')}")
+            return redirect(url_for('manage_courses'))
+        
         data = {
             'name': request.form['name'],
             'duration': request.form['duration'],
@@ -82,12 +95,10 @@ def manage_courses():
         response = requests.post(f"{COURSE_SERVICE_URL}/courses", json=data)
         
         if response.status_code == 201:
-            flash('Course created successfully!', 'success')
             return redirect(url_for('manage_courses'))
         else:
-            flash('Failed to create course. Please try again.', 'error')
             return redirect(url_for('manage_courses'))
-
+  
     # GET method to retrieve existing courses
     response = requests.get(f"{FRONTEND_SERVICE_URL}/courses")
     return Response(response.content, content_type='text/html')

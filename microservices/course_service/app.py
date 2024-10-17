@@ -61,5 +61,14 @@ def get_course(course_id):
     except ClientError as e:
         return jsonify({'message': f"Error retrieving course: {e.response['Error']['Message']}"}), 500
 
+@app.route('/courses/<int:course_id>', methods=['DELETE'])
+def delete_course(course_id):
+    try:
+        print("This got hit")
+        response = courses_table.delete_item(Key={'course_id': course_id})  # Delete the course
+        return jsonify({'message': 'Course deleted successfully.'}), 200
+    except ClientError as e:
+        return jsonify({'message': f"Error deleting course: {e.response['Error']['Message']}"}), 500
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8004)

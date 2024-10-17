@@ -32,6 +32,7 @@ def get_trainer(trainer_id):
 # Register a new trainer
 @app.route('/trainers', methods=['POST'])
 def register_trainer():
+
     data = request.get_json()
     name = data.get('name')
     preferred_cities = data.get('preferred_cities', [])
@@ -58,5 +59,15 @@ def register_trainer():
         return jsonify({'message': 'Trainer registered successfully', 'trainer_id': trainer_id}), 201
     except ClientError as e:
         return jsonify({'message': f"Error registering trainer: {e.response['Error']['Message']}"}), 500
+
+@app.route('/trainers/<int:trainer_id>', methods=['DELETE'])
+def delete_trainer(trainer_id):
+    try:
+        print("This got hit")
+        response = trainers_table.delete_item(Key={'trainer_id': trainer_id})  # Delete the trainer
+        return jsonify({'message': 'trainer deleted successfully.'}), 200
+    except ClientError as e:
+        return jsonify({'message': f"Error deleting trainer: {e.response['Error']['Message']}"}), 500
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8005)

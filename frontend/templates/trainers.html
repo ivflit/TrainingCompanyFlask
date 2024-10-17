@@ -49,6 +49,10 @@
               <strong>Preferred Cities:</strong> {{ ', '.join(trainer.preferred_cities) }}<br>
               <strong>Skills:</strong> {{ ', '.join(trainer.skill_areas) }}
             </p>
+            <form method="POST" action="{{ url_for('trainers_template', trainer_id=trainer.trainer_id) }}">
+              <input type="hidden" name="_method" value="DELETE">
+              <button type="submit" class="button is-danger">Delete</button>
+            </form>
           </li>
         {% endfor %}
       {% else %}
