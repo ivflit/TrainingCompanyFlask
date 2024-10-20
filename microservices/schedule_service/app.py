@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app = Flask(__name__)
+app.secret_key = os.getenv('SECRET_KEY')
 
 FRONTEND_SERVICE_URL = os.getenv('FRONTEND_SERVICE_URL')
 STUDENT_SERVICE_URL = os.getenv('STUDENT_SERVICE_URL')
@@ -71,4 +72,4 @@ def register_student(run_id):
     return jsonify({'message': 'Student registered', 'run_id': run_id}), 200
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8006)
+    app.run(host='0.0.0.0', port=8008)

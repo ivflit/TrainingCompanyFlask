@@ -3,8 +3,10 @@ import requests
 from flask_cors import CORS
 import boto3
 from botocore.exceptions import ClientError
+import os 
 
 app = Flask(__name__)
+app.secret_key = os.getenv('SECRET_KEY')
 CORS(app)
 
 

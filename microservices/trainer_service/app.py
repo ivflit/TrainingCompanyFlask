@@ -1,8 +1,10 @@
 from flask import Flask, jsonify, request
 import boto3
 from botocore.exceptions import ClientError
+import os
 
 app = Flask(__name__)
+app.secret_key = os.getenv('SECRET_KEY')
 
 # Initialize DynamoDB resource
 dynamodb = boto3.resource('dynamodb', region_name='us-west-2')

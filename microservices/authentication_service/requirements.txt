@@ -1,0 +1,8 @@
+Flask==3.0.0
+Flask-Cors==3.0.10
+Flask-Bcrypt==1.0.1          # For hashing passwords
+boto3==1.28.0                # AWS SDK for interacting with DynamoDB
+python-dotenv==1.0.0         # To manage environment variables
+itsdangerous==2.1.2          # For securely signing cookies and tokens
+email-validator==1.3.1       # To validate email addresses
+PyJWT==2.8.0

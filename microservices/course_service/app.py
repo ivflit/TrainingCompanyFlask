@@ -4,6 +4,7 @@ import boto3
 from botocore.exceptions import ClientError
 
 app = Flask(__name__)
+app.secret_key = os.getenv('SECRET_KEY')
 CORS(app)
 
 # Initialize DynamoDB resource

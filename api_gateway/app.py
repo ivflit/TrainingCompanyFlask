@@ -1,120 +1,197 @@
-from flask import Flask, render_template, request, redirect, url_for, jsonify, Response, flash
+from flask import Flask, render_template, request, redirect, url_for, jsonify, Response, flash, session
 import requests
 import os
+import jwt
 from dotenv import load_dotenv
 load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY')
-print("test")
-print(os.getenv("FRONTEND_SERVICE_URL"))
-print("finish")
+
 FRONTEND_SERVICE_URL = os.getenv('FRONTEND_SERVICE_URL')
 STUDENT_SERVICE_URL = os.getenv('STUDENT_SERVICE_URL')
 TRAINER_SERVICE_URL = os.getenv('TRAINER_SERVICE_URL')
 COURSE_SERVICE_URL = os.getenv('COURSE_SERVICE_URL')
 BOOKING_SERVICE_URL = os.getenv('BOOKING_SERVICE_URL')
 API_GATEWAY_URL = os.getenv('API_GATEWAY_URL')
+AUTH_SERVICE_URL = os.getenv('AUTH_SERVICE_URL')
 
+# Helper function to decode JWT token
+def decode_token(token):
+    try:
+        decoded = jwt.decode(token, app.secret_key, algorithms=["HS256"])
+        return decoded
+    except jwt.ExpiredSignatureError:
+        return None  # Token expired
+    except jwt.InvalidTokenError:
+        return None  # Invalid token
+
+@app.route('/login', methods=['POST','GET'])
+def login():
+    if request.method == 'POST':
+        data = {
+            'email': request.form['email'],
+            'password': request.form['password']
+        }
+        response = requests.post(f"{AUTH_SERVICE_URL}/login", json=data)
+        print("LOGIN POST")
+        if response.status_code == 200:
+            token = response.json().get('token')
+            print(token)
+            print("SUCCESCEICBE")
+            session['token'] = token
+            print(session)
+            print(session['token'])
+            return redirect(url_for('index'))
+        else:
+            flash('Invalid email or password.', 'danger')
+            return redirect(url_for('login'))
+    
+    response = requests.get(f"{FRONTEND_SERVICE_URL}/login")
+    return Response(response.content, content_type='text/html')
+
+@app.route('/register', methods=['POST', 'GET'])
+def register():
+    if request.method == 'POST':
+        data = {
+            'email': request.form['email'],
+            'password': request.form['password'],
+            'role': request.form['role']
+        }
+
+        response = requests.post(f"{AUTH_SERVICE_URL}/register", json=data)
+
+        if response.status_code == 201:
+            flash('Registration successful!', 'success')
+            return redirect(url_for('login'))
+        else:
+            flash('Registration failed. Please try again.', 'danger')
+            return redirect(url_for('register'))
+
+    response = requests.get(f"{FRONTEND_SERVICE_URL}/register")
+    return Response(response.content, content_type='text/html')
+
+@app.route('/logout', methods=['GET'])
+def logout():
+    session.pop('token', None)
+    return redirect(url_for('login'))
 
 @app.route('/')
 def index():
+    if 'token' not in session:
+        print("TOKEN NOT IN SESSION HIT")
+        flash('Please log in to access the homepage.', 'warning')
+        return redirect(url_for('login'))
+
     context = {
         'manage_students_url': url_for('manage_students', _external=True),
         'manage_trainers_url': url_for('manage_trainers', _external=True),
         'manage_courses_url': url_for('manage_courses', _external=True)
     }
-    print(context)
     response = requests.get(f"{FRONTEND_SERVICE_URL}/", params=context)
     return Response(response.content, content_type='text/html')
 
-
 @app.route('/students', methods=['GET', 'POST'])
 def manage_students():
+    if 'token' not in session:
+        flash('Please log in to access this page.', 'warning')
+        return redirect(url_for('login'))
+
+    user_data = decode_token(session['token'])
+    if not user_data:
+        flash('Invalid token. Please log in again.', 'danger')
+        return redirect(url_for('login'))
+
     if request.method == 'POST':
         if request.args.get('student_id'):
-            # DELETE STUDENT
+            if user_data['role'] != 'trainer':
+                return jsonify({"error": "Permission denied"}), 403
             response = requests.delete(f"{STUDENT_SERVICE_URL}/students/{request.args.get('student_id')}")
             return redirect(url_for('manage_students'))
-        data = {
-            'name': request.form['name'],
-            'age': request.form['age'],
-            'company': request.form['company'],
-            'level': request.form['level'],
-            'stream': request.form['stream']
-        }
         
-        response = requests.post(f"{STUDENT_SERVICE_URL}/students", json=data)
-        
-        if response.status_code == 201:
-            return redirect(url_for('manage_students'))
+        if user_data['role'] == 'trainer':
+            data = {
+                'name': request.form['name'],
+                'age': request.form['age'],
+                'company': request.form['company'],
+                'level': request.form['level'],
+                'stream': request.form['stream']
+            }
+            response = requests.post(f"{STUDENT_SERVICE_URL}/students", json=data)
+            if response.status_code == 201:
+                return redirect(url_for('manage_students'))
         else:
-            return jsonify({"error": "Failed to add student"}), 500
+            return jsonify({"error": "Permission denied"}), 403
 
-    # GET 
     response = requests.get(f"{FRONTEND_SERVICE_URL}/students")
     return Response(response.content, content_type='text/html')
 
-
 @app.route('/trainers', methods=['GET', 'POST'])
 def manage_trainers():
+    if 'token' not in session:
+        flash('Please log in to access this page.', 'warning')
+        return redirect(url_for('login'))
+
+    user_data = decode_token(session['token'])
+    if not user_data:
+        flash('Invalid token. Please log in again.', 'danger')
+        return redirect(url_for('login'))
+
     if request.method == 'POST':
         if request.args.get('trainer_id'):
-            # DELETE TRAINER
+            if user_data['role'] != 'trainer':
+                return jsonify({"error": "Permission denied"}), 403
             response = requests.delete(f"{TRAINER_SERVICE_URL}/trainers/{request.args.get('trainer_id')}")
             return redirect(url_for('manage_trainers'))
-        print(TRAINER_SERVICE_URL)
-        data = {
-            'name': request.form['name'],
-            'preferred_cities': request.form['preferred_cities'].split(','),
-            'skills': request.form['skills'].split(',')
-        }
-        response = requests.post(f"{TRAINER_SERVICE_URL}/trainers", json=data)
-        if response.status_code == 201:
-            return redirect(url_for('manage_trainers'))
+        
+        if user_data['role'] == 'trainer':
+            data = {
+                'name': request.form['name'],
+                'preferred_cities': request.form['preferred_cities'].split(','),
+                'skills': request.form['skills'].split(',')
+            }
+            response = requests.post(f"{TRAINER_SERVICE_URL}/trainers", json=data)
+            if response.status_code == 201:
+                return redirect(url_for('manage_trainers'))
+        else:
+            return jsonify({"error": "Permission denied"}), 403
 
     response = requests.get(f"{FRONTEND_SERVICE_URL}/trainers")
     return Response(response.content, content_type='text/html')
 
-
 @app.route('/courses', methods=['GET', 'POST'])
 def manage_courses():
+    if 'token' not in session:
+        flash('Please log in to access this page.', 'warning')
+        return redirect(url_for('login'))
+
+    user_data = decode_token(session['token'])
+    if not user_data:
+        flash('Invalid token. Please log in again.', 'danger')
+        return redirect(url_for('login'))
+
     if request.method == 'POST':
         if request.args.get('course_id'):
-            # DELETE COURSE
+            if user_data['role'] != 'trainer':
+                return jsonify({"error": "Permission denied"}), 403
             response = requests.delete(f"{COURSE_SERVICE_URL}/courses/{request.args.get('course_id')}")
             return redirect(url_for('manage_courses'))
-        
-        data = {
-            'name': request.form['name'],
-            'duration': request.form['duration'],
-            'skills': request.form['skills'].split(','),  # Assume skills are entered as comma-separated values
-            'price': request.form['price']
-        }
-        
-        response = requests.post(f"{COURSE_SERVICE_URL}/courses", json=data)
-        
-        if response.status_code == 201:
-            return redirect(url_for('manage_courses'))
+
+        if user_data['role'] == 'trainer':
+            data = {
+                'name': request.form['name'],
+                'duration': request.form['duration'],
+                'skills': request.form['skills'].split(','),
+                'price': request.form['price']
+            }
+            response = requests.post(f"{COURSE_SERVICE_URL}/courses", json=data)
+            if response.status_code == 201:
+                return redirect(url_for('manage_courses'))
         else:
-            return redirect(url_for('manage_courses'))
-  
-    # GET method to retrieve existing courses
+            return jsonify({"error": "Permission denied"}), 403
+
     response = requests.get(f"{FRONTEND_SERVICE_URL}/courses")
     return Response(response.content, content_type='text/html')
-
-
-@app.route('/students/<int:student_id>/book', methods=['POST'])
-def book_course(student_id):
-    data = {
-        'course_id': request.form['course_id'],
-        'date': request.form['date']
-    }
-    response = requests.post(f"{BOOKING_SERVICE_URL}/{student_id}/book", json=data)
-    if response.status_code == 201:
-        return redirect(url_for('manage_students'))
-    return "Booking failed!", 400
-
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8000)
