@@ -9,8 +9,16 @@ load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY')
-dynamodb = boto3.resource('dynamodb', region_name='us-west-2')
+
+dynamodb = boto3.resource(
+    'dynamodb',
+    aws_access_key_id=os.getenv('AWS_ACCESS_KEY_ID'),
+    aws_secret_access_key=os.getenv('AWS_SECRET_ACCESS_KEY'),
+    region_name=os.getenv('AWS_DEFAULT_REGION')
+)
+print(dynamodb)
 users_table = dynamodb.Table('Users')  # DynamoDB table for user data
+print(users_table)
 
 # JWT secret
 JWT_SECRET = app.secret_key
@@ -65,12 +73,13 @@ def login():
     data = request.get_json()
     email = data.get('email')
     password = data.get('password')
-    print("LOGIN HIT")
     try:
+        print(users_table)
         # Retrieve user from DynamoDB
         response = users_table.get_item(Key={'email': email})
+        print(response)
         user = response.get('Item')
-        print
+        print(user)
         if user and bcrypt.checkpw(password.encode('utf-8'), user['password'].encode('utf-8')):
             # Successful login - generate JWT token
             print("HIT")

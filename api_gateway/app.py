@@ -78,7 +78,7 @@ def logout():
 
 @app.route('/')
 def index():
-    if decode_token(session['token']) == None:
+    if 'token' not in session or decode_token(session['token']) is None:
         return redirect(url_for('logout'))
 
     context = {
@@ -92,7 +92,7 @@ def index():
 
 @app.route('/students', methods=['GET', 'POST'])
 def manage_students():
-    if decode_token(session['token']) == None:
+    if 'token' not in session or decode_token(session['token']) is None:
         return redirect(url_for('logout'))
     context = {
         'role': decode_token(session['token'])['role']
@@ -123,7 +123,7 @@ def manage_students():
 
 @app.route('/trainers', methods=['GET', 'POST'])
 def manage_trainers():
-    if decode_token(session['token']) == None:
+    if 'token' not in session or decode_token(session['token']) is None:
         return redirect(url_for('logout'))
     context = {
         'role': decode_token(session['token'])['role']
@@ -152,7 +152,7 @@ def manage_trainers():
 
 @app.route('/courses', methods=['GET', 'POST'])
 def manage_courses():
-    if decode_token(session['token']) == None:
+    if 'token' not in session or decode_token(session['token']) is None:
         return redirect(url_for('logout'))
     context = {
         'role': decode_token(session['token'])['role']

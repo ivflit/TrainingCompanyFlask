@@ -4,6 +4,8 @@ from flask_cors import CORS
 import boto3
 from botocore.exceptions import ClientError
 import os 
+from dotenv import load_dotenv
+load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY')
@@ -11,17 +13,13 @@ CORS(app)
 
 
 # Initialize DynamoDB resource
-dynamodb = boto3.resource('dynamodb', region_name='us-west-2')
-students_table = dynamodb.Table('Students')  # Use the actual table name
-
-# Use a dictionary to store students with their IDs as keys
-# students = {
-#     1: {'name': 'John Doe', 'age': 21, 'company': 'TechCorp', 'level': 'Undergraduate', 'stream': 'Computer Science'},
-#     2: {'name': 'Jane Smith', 'age': 22, 'company': 'Health Inc.', 'level': 'Undergraduate', 'stream': 'Biology'},
-#     3: {'name': 'Alice Johnson', 'age': 23, 'company': 'Finance Co.', 'level': 'Graduate', 'stream': 'Economics'},
-#     4: {'name': 'Bob Brown', 'age': 20, 'company': 'Marketing LLC', 'level': 'Undergraduate', 'stream': 'Business'},
-#     5: {'name': 'Charlie Davis', 'age': 24, 'company': 'AI Solutions', 'level': 'Graduate', 'stream': 'Data Science'},
-# }
+dynamodb = boto3.resource(
+    'dynamodb',
+    aws_access_key_id=os.getenv('AWS_ACCESS_KEY_ID'),
+    aws_secret_access_key=os.getenv('AWS_SECRET_ACCESS_KEY'),
+    region_name=os.getenv('AWS_DEFAULT_REGION')
+)
+students_table = dynamodb.Table('Students') 
 
 @app.route('/students', methods=['POST'])
 def register_student():
@@ -74,9 +72,6 @@ def get_students():
     try:
         response = students_table.scan()  # Get all students from DynamoDB
         students = response.get('Items', [])
-        print(students)
-        print("AAA")
-        print(jsonify(students))
         return jsonify(students), 200
     except ClientError as e:
         return jsonify({'message': f"Error retrieving students: {e.response['Error']['Message']}"}), 500

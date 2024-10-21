@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 import requests
+import os
 
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY')
@@ -17,7 +18,7 @@ def create_booking():
     data = request.get_json()
     course_id = data.get('course_id')
     
-    course_response = requests.get(COURSES_SERVICE_URL)
+    course_response = requests.get(COURSE_SERVICE_URL)
     
     if course_response.status_code != 200:
         return jsonify({'error': 'Failed to retrieve course information'}), 800

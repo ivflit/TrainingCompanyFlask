@@ -11,7 +11,7 @@ services:
       - booking_service
       - course_service
       - trainer_service
-      - schedule_service
+      - authentication_service
     networks:
       - training-network
     env_file:
@@ -24,6 +24,9 @@ services:
       - "8002:8000"
     networks:
       - training-network
+    env_file:
+      - ./.env
+    
 
   booking_service:
     build:
@@ -32,6 +35,8 @@ services:
       - "8003:8000"
     networks:
       - training-network
+    env_file:
+      - ./.env
 
   course_service:
     build:
@@ -40,6 +45,9 @@ services:
       - "8004:8000"
     networks:
       - training-network
+    env_file:
+      - ./.env
+      
 
   trainer_service:
     build:
@@ -48,10 +56,12 @@ services:
       - "8005:8000"
     networks:
       - training-network
+    env_file:
+      - ./.env
 
-  schedule_service:
+  authentication_service:
     build:
-      context: ./microservices/schedule_service
+      context: ./microservices/authentication_service
     ports:
       - "8006:8000"
     networks:
