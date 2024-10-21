@@ -78,119 +78,105 @@ def logout():
 
 @app.route('/')
 def index():
-    if 'token' not in session:
-        print("TOKEN NOT IN SESSION HIT")
-        flash('Please log in to access the homepage.', 'warning')
-        return redirect(url_for('login'))
+    if decode_token(session['token']) == None:
+        return redirect(url_for('logout'))
 
     context = {
         'manage_students_url': url_for('manage_students', _external=True),
         'manage_trainers_url': url_for('manage_trainers', _external=True),
-        'manage_courses_url': url_for('manage_courses', _external=True)
+        'manage_courses_url': url_for('manage_courses', _external=True),
+        'role': decode_token(session['token'])['role']
     }
     response = requests.get(f"{FRONTEND_SERVICE_URL}/", params=context)
     return Response(response.content, content_type='text/html')
 
 @app.route('/students', methods=['GET', 'POST'])
 def manage_students():
-    if 'token' not in session:
-        flash('Please log in to access this page.', 'warning')
-        return redirect(url_for('login'))
+    if decode_token(session['token']) == None:
+        return redirect(url_for('logout'))
+    context = {
+        'role': decode_token(session['token'])['role']
+    }
 
-    user_data = decode_token(session['token'])
-    if not user_data:
-        flash('Invalid token. Please log in again.', 'danger')
-        return redirect(url_for('login'))
-
+    # IF DELETION OR NEW STUDENT
     if request.method == 'POST':
         if request.args.get('student_id'):
-            if user_data['role'] != 'trainer':
-                return jsonify({"error": "Permission denied"}), 403
+            # DELETING STUDENT
             response = requests.delete(f"{STUDENT_SERVICE_URL}/students/{request.args.get('student_id')}")
             return redirect(url_for('manage_students'))
         
-        if user_data['role'] == 'trainer':
-            data = {
-                'name': request.form['name'],
-                'age': request.form['age'],
-                'company': request.form['company'],
-                'level': request.form['level'],
-                'stream': request.form['stream']
-            }
-            response = requests.post(f"{STUDENT_SERVICE_URL}/students", json=data)
-            if response.status_code == 201:
-                return redirect(url_for('manage_students'))
-        else:
-            return jsonify({"error": "Permission denied"}), 403
 
-    response = requests.get(f"{FRONTEND_SERVICE_URL}/students")
+        data = {
+            'name': request.form['name'],
+            'age': request.form['age'],
+            'company': request.form['company'],
+            'level': request.form['level'],
+            'stream': request.form['stream']
+        }
+        response = requests.post(f"{STUDENT_SERVICE_URL}/students", json=data)
+        if response.status_code == 201:
+            return redirect(url_for('manage_students'))
+
+    #  GET
+    response = requests.get(f"{FRONTEND_SERVICE_URL}/students", params=context)
     return Response(response.content, content_type='text/html')
 
 @app.route('/trainers', methods=['GET', 'POST'])
 def manage_trainers():
-    if 'token' not in session:
-        flash('Please log in to access this page.', 'warning')
-        return redirect(url_for('login'))
+    if decode_token(session['token']) == None:
+        return redirect(url_for('logout'))
+    context = {
+        'role': decode_token(session['token'])['role']
+    }
 
-    user_data = decode_token(session['token'])
-    if not user_data:
-        flash('Invalid token. Please log in again.', 'danger')
-        return redirect(url_for('login'))
-
+    # DELETE OR CREATE NEW TRAINER
     if request.method == 'POST':
         if request.args.get('trainer_id'):
-            if user_data['role'] != 'trainer':
-                return jsonify({"error": "Permission denied"}), 403
+            # Trainer deletion -> only done by admin
             response = requests.delete(f"{TRAINER_SERVICE_URL}/trainers/{request.args.get('trainer_id')}")
             return redirect(url_for('manage_trainers'))
         
-        if user_data['role'] == 'trainer':
-            data = {
-                'name': request.form['name'],
-                'preferred_cities': request.form['preferred_cities'].split(','),
-                'skills': request.form['skills'].split(',')
-            }
-            response = requests.post(f"{TRAINER_SERVICE_URL}/trainers", json=data)
-            if response.status_code == 201:
-                return redirect(url_for('manage_trainers'))
-        else:
-            return jsonify({"error": "Permission denied"}), 403
 
-    response = requests.get(f"{FRONTEND_SERVICE_URL}/trainers")
+        data = {
+            'name': request.form['name'],
+            'preferred_cities': request.form['preferred_cities'].split(','),
+            'skills': request.form['skills'].split(',')
+        }
+        response = requests.post(f"{TRAINER_SERVICE_URL}/trainers", json=data)
+        if response.status_code == 201:
+            return redirect(url_for('manage_trainers'))
+
+    # GET
+    response = requests.get(f"{FRONTEND_SERVICE_URL}/trainers", params=context)
     return Response(response.content, content_type='text/html')
 
 @app.route('/courses', methods=['GET', 'POST'])
 def manage_courses():
-    if 'token' not in session:
-        flash('Please log in to access this page.', 'warning')
-        return redirect(url_for('login'))
+    if decode_token(session['token']) == None:
+        return redirect(url_for('logout'))
+    context = {
+        'role': decode_token(session['token'])['role']
+    }
 
-    user_data = decode_token(session['token'])
-    if not user_data:
-        flash('Invalid token. Please log in again.', 'danger')
-        return redirect(url_for('login'))
-
+    # DELETE OR CREATE NEW COURSE
     if request.method == 'POST':
         if request.args.get('course_id'):
-            if user_data['role'] != 'trainer':
-                return jsonify({"error": "Permission denied"}), 403
+            # DELETION
             response = requests.delete(f"{COURSE_SERVICE_URL}/courses/{request.args.get('course_id')}")
             return redirect(url_for('manage_courses'))
 
-        if user_data['role'] == 'trainer':
-            data = {
-                'name': request.form['name'],
-                'duration': request.form['duration'],
-                'skills': request.form['skills'].split(','),
-                'price': request.form['price']
-            }
-            response = requests.post(f"{COURSE_SERVICE_URL}/courses", json=data)
-            if response.status_code == 201:
-                return redirect(url_for('manage_courses'))
-        else:
-            return jsonify({"error": "Permission denied"}), 403
+        data = {
+            'name': request.form['name'],
+            'duration': request.form['duration'],
+            'skills': request.form['skills'].split(','),
+            'price': request.form['price']
+        }
+        response = requests.post(f"{COURSE_SERVICE_URL}/courses", json=data)
+        if response.status_code == 201:
+            return redirect(url_for('manage_courses'))
 
-    response = requests.get(f"{FRONTEND_SERVICE_URL}/courses")
+    # GET
+    response = requests.get(f"{FRONTEND_SERVICE_URL}/courses", params=context)
     return Response(response.content, content_type='text/html')
 
 if __name__ == '__main__':
