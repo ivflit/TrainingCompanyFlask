@@ -16,8 +16,6 @@ users_table = dynamodb.Table('Users')  # DynamoDB table for user data
 JWT_SECRET = app.secret_key
 def generate_token(email, role):
     # Ensure both email and role are strings
-    print(email)
-    print(role)
     if not isinstance(email, str):
         raise ValueError("Email must be a string")
     if not isinstance(role, str):
@@ -30,14 +28,9 @@ def generate_token(email, role):
     payload = {
     'email': email,
     'role': role,
-    'exp': datetime.now(timezone.utc) + timedelta(seconds=20)
+    'exp': datetime.now(timezone.utc) + timedelta(hours=1)
     }
-    print(payload)
-    print(type(payload))
-    print(type(JWT_SECRET))
-    print(type(algorithm))
     token = jwt.encode(payload, JWT_SECRET,algorithm)
-    print(token)
     return token
 # User registration
 @app.route('/register', methods=['POST'])
