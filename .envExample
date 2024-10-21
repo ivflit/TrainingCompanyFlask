@@ -1,0 +1,22 @@
+API_GATEWAY_URL = "http://api_gateway:8000"
+STUDENT_SERVICE_URL = "http://student_service:8002"
+BOOKING_SERVICE_URL = "http://booking_service:8003"
+COURSE_SERVICE_URL = "http://course_service:8004"
+TRAINER_SERVICE_URL = "http://trainer_service:8005"
+AUTH_SERVICE_URL = "http://authentication_service:8006"
+FRONTEND_SERVICE_URL = "http://frontend:8007"
+
+# API_GATEWAY_URL = "http://127.0.0.1:8000"
+# STUDENT_SERVICE_URL = "http://127.0.0.1:8002"
+# BOOKING_SERVICE_URL = "http://127.0.0.1:8003"
+# COURSE_SERVICE_URL = "http://127.0.0.1:8004"
+# TRAINER_SERVICE_URL = "http://127.0.0.1:8005"
+# AUTH_SERVICE_URL = "http://127.0.0.1:8006"
+# FRONTEND_SERVICE_URL = "http://127.0.0.1:8007"
+SECRET_KEY=""
+JWT_SECRET=""
+
+AWS_ACCESS_KEY_ID=''
+AWS_SECRET_ACCESS_KEY='w
+AWS_DEFAULT_REGION='us-west-2'
+
