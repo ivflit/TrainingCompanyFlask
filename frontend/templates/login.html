@@ -6,7 +6,7 @@
 <div class="container">
     <div class="login-box">
         <h2>Login</h2>
-        <form method="POST" action="{{ url_for('login_template') }}">
+        <form method="POST" action="{{ url_for('login_template') }}" id="loginForm">
             <div class="input-group">
                 <label for="email">Email:</label>
                 <input type="email" name="email" id="email" required>
@@ -19,7 +19,23 @@
                 <button type="submit" class="btn btn-primary">Login</button>
             </div>
         </form>
+        
         <p>Don't have an account? <a href="{{ url_for('register_template') }}">Register here</a></p>
+
+        <!-- Quick Login Buttons -->
+        <div class="quick-login-buttons">
+            <h3>Quick Login:</h3>
+            <button class="btn btn-info" onclick="quickLogin('student@example.com', 'student123')">Login as Student</button>
+            <button class="btn btn-info" onclick="quickLogin('admin@example.com', 'admin123')">Login as Admin</button>
+            <button class="btn btn-info" onclick="quickLogin('trainer@example.com', 'trainer123')">Login as Trainer</button>
+        </div>
     </div>
 </div>
+
+<script>
+    function quickLogin(email, password) {
+        document.getElementById('email').value = email;
+        document.getElementById('password').value = password;
+    }
+</script>
 {% endblock %}

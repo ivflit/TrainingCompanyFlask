@@ -26,12 +26,13 @@ def frontend_static(filename):
 @app.route('/')
 def index_template():
 
-    urls = {
+    context = {
         'manage_students_url': request.args.get('manage_students_url'),
         'manage_trainers_url': request.args.get('manage_trainers_url'),
-        'manage_courses_url': request.args.get('manage_courses_url')
+        'manage_courses_url': request.args.get('manage_courses_url'),
+        'role': request.args.get('role')
     }
-    return render_template('index.html', **urls)
+    return render_template('index.html', **context)
 
 # Login route
 @app.route('/login', methods=['GET', 'POST'])
@@ -93,9 +94,12 @@ def logout():
 def students_template():
     token = request.cookies.get('token')
     headers = {'Authorization': f'Bearer {token}'}  # Pass token in headers
-
     students = requests.get(f"{STUDENT_SERVICE_URL}/students", headers=headers).json()
-    return render_template('students.html', students=students)
+    context = {
+        'role': request.args.get('role'),
+        'students': students
+    }
+    return render_template('students.html', **context)
 
 # Trainers route
 @app.route('/trainers')
@@ -105,7 +109,11 @@ def trainers_template():
     headers = {'Authorization': f'Bearer {token}'}  # Pass token in headers
 
     trainers = requests.get(f"{TRAINER_SERVICE_URL}/trainers", headers=headers).json()
-    return render_template('trainers.html', trainers=trainers)
+    context = {
+        'role': request.args.get('role'),
+        'trainers': trainers
+    }
+    return render_template('trainers.html',  **context)
 
 # Courses route
 @app.route('/courses')
@@ -113,9 +121,12 @@ def courses_template():
 
     token = request.cookies.get('token')
     headers = {'Authorization': f'Bearer {token}'}  # Pass token in headers
-
     courses = requests.get(f"{COURSE_SERVICE_URL}/courses", headers=headers).json()
-    return render_template('courses.html', courses=courses)
+    context = {
+        'role': request.args.get('role'),
+        'courses': courses
+    }
+    return render_template('courses.html', **context)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8007)

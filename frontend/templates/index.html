@@ -7,12 +7,14 @@
 <section class="section">
   <div class="container">
     <nav class="level">
+      {% if role != 'student' %}
       <div class="level-item has-text-centered">
         <div>
           <p class="heading">Students</p>
           <a href="{{ manage_students_url }}" class="button is-info is-medium">Manage Students</a>
         </div>
       </div>
+      {% endif %}
       <div class="level-item has-text-centered">
         <div>
           <p class="heading">Trainers</p>
@@ -29,6 +31,9 @@
     <div class="has-text-centered">
       <a class="button is-danger" href="{{ url_for('logout') }}">Logout</a>
     </div>
+  </div>
+  <div class="test">
+    {{ role }}
   </div>
 </section>
 {% endblock %}

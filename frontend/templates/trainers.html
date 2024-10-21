@@ -8,7 +8,8 @@
   <div class="container">
     <h1 class="title is-2">Manage Trainers</h1>
 
-    <!-- Form to Add Trainers -->
+    <!-- Form to Add Trainers (Only for Admins) -->
+    {% if role == 'admin' %}
     <form method="POST" class="box" action="{{ url_for('trainers_template') }}">
       <div class="field">
         <label class="label">Name</label>
@@ -37,6 +38,7 @@
         </div>
       </div>
     </form>
+    {% endif %}
 
     <!-- Registered Trainers List -->
     <h2 class="title is-4">Registered Trainers</h2>
@@ -49,10 +51,13 @@
               <strong>Preferred Cities:</strong> {{ ', '.join(trainer.preferred_cities) }}<br>
               <strong>Skills:</strong> {{ ', '.join(trainer.skill_areas) }}
             </p>
+            <!-- Only admins can delete trainers -->
+            {% if role == 'admin' %}
             <form method="POST" action="{{ url_for('trainers_template', trainer_id=trainer.trainer_id) }}">
               <input type="hidden" name="_method" value="DELETE">
               <button type="submit" class="button is-danger">Delete</button>
             </form>
+            {% endif %}
           </li>
         {% endfor %}
       {% else %}

@@ -5,6 +5,8 @@
 {% block content %}
   <h1 class="title is-2">Available Courses</h1>
 
+  <!-- Course Creation Form (Only for Admins and Trainers) -->
+  {% if role == 'admin' or role == 'trainer' %}
   <div class="box">
     <h2 class="subtitle is-4">Create a New Course</h2>
     <form method="POST" action="{{ url_for('courses_template') }}">
@@ -43,7 +45,9 @@
       </div>
     </form>
   </div>
+  {% endif %}
 
+  <!-- List of Existing Courses -->
   <div class="box">
     <h2 class="subtitle is-4">Existing Courses</h2>
     <ul>
@@ -55,15 +59,20 @@
             <p><strong>Skills:</strong> {{ course.skills | join(', ') }}</p>
             <p><strong>Price:</strong> {{ course.price }}</p>
           </div>
+
+          <!-- Delete Course Button (Only for Admins) -->
+          {% if role == 'admin' %}
           <form method="POST" action="{{ url_for('courses_template', course_id=course.course_id) }}">
             <input type="hidden" name="_method" value="DELETE">
             <button type="submit" class="button is-danger">Delete</button>
           </form>
-        
+          {% endif %}
         </li>
       {% endfor %}
     </ul>
   </div>
+
+  <!-- Back to Home Button -->
   <div class="control">
     <a href="{{ url_for('index_template') }}" class="button is-link">
       Back to Home
