@@ -25,9 +25,9 @@
         <!-- Quick Login Buttons -->
         <div class="quick-login-buttons">
             <h3>Quick Login:</h3>
-            <button class="btn btn-info" onclick="quickLogin('student@example.com', 'student123')">Login as Student</button>
-            <button class="btn btn-info" onclick="quickLogin('admin@example.com', 'admin123')">Login as Admin</button>
-            <button class="btn btn-info" onclick="quickLogin('trainer@example.com', 'trainer123')">Login as Trainer</button>
+            <button class="btn btn-info" onclick="quickLogin('student@example.com', 'student')">Login as Student</button>
+            <button class="btn btn-info" onclick="quickLogin('admin@example.com', 'admin')">Login as Admin</button>
+            <button class="btn btn-info" onclick="quickLogin('trainer@example.com', 'trainer')">Login as Trainer</button>
         </div>
     </div>
 </div>
@@ -36,6 +36,7 @@
     function quickLogin(email, password) {
         document.getElementById('email').value = email;
         document.getElementById('password').value = password;
+        document.getElementById('loginForm').submit();
     }
 </script>
 {% endblock %}
