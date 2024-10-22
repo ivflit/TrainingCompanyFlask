@@ -3,7 +3,7 @@ name: Deploy to EC2
 on:
   push:
     branches:
-      - master  # Change this to your default branch
+      - master  # Ensure this is your default branch
 
 jobs:
   deploy:
@@ -11,7 +11,7 @@ jobs:
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3  # Updated to the latest version
 
       - name: Stop and Remove Docker Containers
         env:
@@ -31,7 +31,7 @@ jobs:
         run: |
           echo "${{ secrets.EC2_SSH_KEY }}" > private_key
           chmod 600 private_key
-          ssh -o StrictHostKeyChecking=no -i private_key $EC2_USER@$EC2_HOST "cd TrainingCompanyFlask && git pull origin main"
+          ssh -o StrictHostKeyChecking=no -i private_key $EC2_USER@$EC2_HOST "cd TrainingCompanyFlask && git pull origin master"  # Changed to 'master'
 
       - name: Start Docker Containers
         env:
