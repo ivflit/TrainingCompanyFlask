@@ -34,7 +34,6 @@ def login():
             'password': request.form['password']
         }
         response = requests.post(f"{AUTH_SERVICE_URL}/login", json=data)
-        print("LOGIN POST")
         if response.status_code == 200:
             token = response.json().get('token')
             print(token)
