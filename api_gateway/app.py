@@ -36,7 +36,6 @@ def login():
         response = requests.post(f"{AUTH_SERVICE_URL}/login", json=data)
         if response.status_code == 200:
             token = response.json().get('token')
-            print(token)
             print("SUCCESCEICBE")
             session['token'] = token
             print(session)
