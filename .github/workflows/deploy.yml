@@ -64,19 +64,26 @@ jobs:
 
   # Job to deploy to EC2
   # Job to deploy to EC2
+  # Job to deploy to EC2
   deploy:
     runs-on: ubuntu-latest
-    needs: test  # Ensure deployment only happens if tests pass
+    needs: test
 
     steps:
       # Check out the repository
       - name: Checkout code
         uses: actions/checkout@v2
 
+      # Set up SSH agent and add private key
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.EC2_PRIVATE_KEY }}
+
       # SSH into EC2 and deploy
       - name: Deploy to EC2
         run: |
-          ssh -o StrictHostKeyChecking=no -i ${{ secrets.EC2_PRIVATE_KEY }} ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+          ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
             cd ${{ secrets.EC2_PROJECT_PATH }}
 
             # Check if any Docker containers are running
@@ -87,7 +94,7 @@ jobs:
 
             # Pull the latest code from GitHub
             echo "Pulling latest code..."
-            git pull origin master  # Pull the latest from the main branch
+            git pull origin master
 
             # Rebuild and run the containers
             echo "Running docker-compose..."
