@@ -1,3 +1,7 @@
 node_modules/
 venv/
 .env
+# Ignore Python bytecode
+__pycache__/
+*.pyc
+*.pyo

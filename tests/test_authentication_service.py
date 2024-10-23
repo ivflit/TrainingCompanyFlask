@@ -1,5 +1,6 @@
 import pytest
 from unittest.mock import patch, MagicMock
+import microservices
 from microservices.authentication_service.app import app, generate_token
 import bcrypt
 import jwt
@@ -13,7 +14,7 @@ def client():
         yield client
 
 # Test user registration
-@patch('authentication.service.users_table.put_item')
+@patch('microservices.authentication_service.app.users_table.put_item')
 def test_register_user(mock_put_item, client):
     # Mock successful user registration
     mock_put_item.return_value = {}
@@ -47,7 +48,7 @@ def test_register_user(mock_put_item, client):
     assert b'Error registering user' in response.data
 
 # Test user login
-@patch('authentication.service.users_table.get_item')
+@patch('microservices.authentication_service.app.users_table.get_item')
 def test_login(mock_get_item, client):
     # Mock a user in DynamoDB
     hashed_password = bcrypt.hashpw('password123'.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
