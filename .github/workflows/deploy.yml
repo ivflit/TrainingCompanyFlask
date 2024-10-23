@@ -21,10 +21,16 @@ jobs:
       with:
         python-version: '3.8'
 
-    # Set PYTHONPATH
-    - name: Set PYTHONPATH
+    # Set AWS environment variables
+    - name: Set AWS credentials
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
       run: |
-        echo "PYTHONPATH=$PYTHONPATH:$(pwd)" >> $GITHUB_ENV
+        echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> $GITHUB_ENV
+        echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> $GITHUB_ENV
+        echo "AWS_DEFAULT_REGION=${{ secrets.AWS_DEFAULT_REGION }}" >> $GITHUB_ENV
 
     # Install dependencies for all services
     - name: Install dependencies
