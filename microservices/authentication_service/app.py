@@ -39,6 +39,7 @@ def generate_token(email, role):
     'exp': datetime.now(timezone.utc) + timedelta(hours=1)
     }
     print(payload)
+    print(f"JWTSECRET: {JWT_SECRET}")
     token = jwt.encode(payload, JWT_SECRET,algorithm)
     return token
 # User registration
@@ -74,7 +75,7 @@ def login():
     data = request.get_json()
     email = data.get('email')
     password = data.get('password')
-    print(f"EMAIL FROM TEST: {emails}")
+    print(f"EMAIL FROM TEST: {email}")
     try:
         # Retrieve user from DynamoDB
         print(f"EMAIL")
