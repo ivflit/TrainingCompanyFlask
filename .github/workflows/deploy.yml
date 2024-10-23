@@ -21,6 +21,11 @@ jobs:
       with:
         python-version: '3.8'
 
+    # Set PYTHONPATH
+    - name: Set PYTHONPATH
+      run: |
+        echo "PYTHONPATH=$PYTHONPATH:$(pwd)" >> $GITHUB_ENV
+
     # Install dependencies for all services
     - name: Install dependencies
       run: |
