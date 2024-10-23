@@ -35,8 +35,6 @@ jobs:
     # Install dependencies for all services
     - name: Install dependencies
       run: |
-        python3 -m venv venv
-        . venv/bin/activate
         pip install pytest
         pip install -r api_gateway/requirements.txt
         pip install -r frontend/requirements.txt
@@ -46,12 +44,6 @@ jobs:
         pip install -r microservices/schedule_service/requirements.txt
         pip install -r microservices/student_service/requirements.txt
         pip install -r microservices/trainer_service/requirements.txt
-        python -m pytest tests/test_authentication_service.py || exit 1
-        python -m pytest tests/test_course_service.py || exit 1
-        python -m pytest tests/test_student_service.py || exit 1
-        python -m pytest tests/test_trainer_service.py || exit 1
-        python -m pytest tests/test_api_gateway.py || exit 1
-        python -m pytest tests/test_frontend.py || exit 1
 
     # Run tests for all services
     - name: Run tests
