@@ -16,7 +16,6 @@ dynamodb = boto3.resource(
     aws_secret_access_key=os.getenv('AWS_SECRET_ACCESS_KEY'),
     region_name=os.getenv('AWS_DEFAULT_REGION')
 )
-print(dynamodb)
 users_table = dynamodb.Table('Users')  # DynamoDB table for user data
 print(users_table)
 
