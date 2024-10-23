@@ -1,6 +1,5 @@
 import pytest
 from unittest.mock import patch, MagicMock
-import microservices
 from microservices.authentication_service.app import app, generate_token
 import bcrypt
 import jwt
