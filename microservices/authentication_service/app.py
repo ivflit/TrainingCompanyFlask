@@ -78,7 +78,8 @@ def login():
         response = users_table.get_item(Key={'email': email})
         print(f"RESPONSE FROM USERS.GET: {response}")
         user = response.get('Item')
-
+        print(f"USER: {user}")
+        print(f"PASSWORD CHECK: {bcrypt.checkpw(password.encode('utf-8'), user['password'].encode('utf-8'))}")
         if user and bcrypt.checkpw(password.encode('utf-8'), user['password'].encode('utf-8')):
             # Successful login - generate JWT token
             print(f"USER ROLE: {user['role']}")
