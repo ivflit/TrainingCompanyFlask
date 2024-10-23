@@ -49,30 +49,38 @@ def test_register_user(mock_put_item, client):
 # Test user login
 @patch('microservices.authentication_service.app.users_table.get_item')
 def test_login(mock_get_item, client):
-    # Mock a user in DynamoDB
-    hashed_password = bcrypt.hashpw('password123'.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+    # Mock a user in DynamoDB with correct credentials
+    hashed_password = bcrypt.hashpw('admin'.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
     mock_get_item.return_value = {
         'Item': {
-            'email': 'test@example.com',
+            'email': 'admin@gmail.com',
             'password': hashed_password,
-            'role': 'student'
+            'role': 'admin'  # Adjust role based on your application
         }
     }
 
-    # Test successful login
+    # Test successful login with correct credentials
     response = client.post('/login', json={
-        'email': 'admin@gmail.com',
-        'password': 'admin'
+        'email': 'admin@gmail.com',  # Match the email in mock
+        'password': 'admin'           # Match the password
     })      
     assert response.status_code == 200   
     json_data = response.get_json()
     assert 'token' in json_data
 
-    # Test login with invalid credentials
-    mock_get_item.return_value = {'Item': None}
+    # Test login with invalid credentials (wrong password)
     response = client.post('/login', json={
-        'email': 'test@example.com',
-        'password': 'wrongpassword'
+        'email': 'admin@gmail.com',  # Match the email in mock
+        'password': 'wrongpassword'   # Use a wrong password
+    })
+    assert response.status_code == 401
+    assert b'Invalid email or password' in response.data
+
+    # Test login with invalid credentials (non-existent user)
+    mock_get_item.return_value = {'Item': None}  # Simulate user not found
+    response = client.post('/login', json={
+        'email': 'admin@gmail.com',  # Match the email in mock
+        'password': 'admin'           # Use correct password but user not found
     })
     assert response.status_code == 401
     assert b'Invalid email or password' in response.data
@@ -80,8 +88,8 @@ def test_login(mock_get_item, client):
     # Test login with DynamoDB failure
     mock_get_item.side_effect = Exception('DynamoDB Error')
     response = client.post('/login', json={
-        'email': 'test@example.com',
-        'password': 'password123'
+        'email': 'admin@gmail.com',
+        'password': 'admin'  # Use correct credentials
     })
     assert response.status_code == 500
     assert b'Login failed' in response.data

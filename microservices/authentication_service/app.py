@@ -73,10 +73,12 @@ def login():
     data = request.get_json()
     email = data.get('email')
     password = data.get('password')
+    print(f"EMAIL FROM TEST: {emails}")
     try:
         # Retrieve user from DynamoDB
+        print(f"EMAIL")
         response = users_table.get_item(Key={'email': email})
-        print(f"RESPONSE FROM USERS.GET: {response}")
+        print(f"RESPONSE FROM DB: {response}")
         user = response.get('Item')
         print(f"USER: {user}")
         print(f"PASSWORD FROM TEST: {password}")
