@@ -38,7 +38,6 @@ def generate_token(email, role):
     'role': role,
     'exp': datetime.now(timezone.utc) + timedelta(hours=1)
     }
-    print(payload)
     print(f"JWTSECRET: {JWT_SECRET}")
     token = jwt.encode(payload, JWT_SECRET,algorithm)
     return token
