@@ -23,9 +23,11 @@ jobs:
     # Load environment variables from .env file
     - name: Load environment variables
       env:
-        JWT_SECRET: ${{ secrets.JWT_SECRET}}
+        JWT_SECRET: ${{ secrets.JWT_SECRET }}
+        SECRET_KEY: ${{ secrets.SECRET_KEY }}
       run: |
         echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> $GITHUB_ENV
+        echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> $GITHUB_ENV
 
     # Set AWS environment variables
     - name: Set AWS credentials
