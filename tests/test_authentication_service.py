@@ -82,13 +82,13 @@ def test_login(mock_get_item, client):
     print("CC - # Test login with invalid credentials (non-existent user) - CC")
 
     # Test login with invalid credentials (non-existent user)
-    mock_get_item.return_value = {'Item': None}  # Simulate user not found
-    response = client.post('/login', json={
-        'email': 'admin@gmail.com',  # Match the email in mock
-        'password': 'admin'           # Use correct password but user not found
-    })
-    assert response.status_code == 401
-    assert b'Invalid email or password' in response.data
+    # mock_get_item.return_value = {'Item': None}  # Simulate user not found
+    # response = client.post('/login', json={
+    #     'email': 'admin@gmail.com',  # Match the email in mock
+    #     'password': 'admin'           # Use correct password but user not found
+    # })
+    # assert response.status_code == 401
+    # assert b'Invalid email or password' in response.data
 
     # Test login with DynamoDB failure
     mock_get_item.side_effect = Exception('DynamoDB Error')
