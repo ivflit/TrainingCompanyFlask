@@ -72,16 +72,10 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    # Set up SSH agent and add private key
-    - name: Setup SSH
-      uses: webfactory/ssh-agent@v0.5.3
-      with:
-        ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
-
     # SSH into EC2 and deploy
     - name: Deploy to EC2
       run: |
-        ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+        ssh -i "${{secrets.EC2_PRIVATE}}" ${{ secrets.EC2_USER }}@ec2-{{ secrets.EC2_HOST }}.{{secrets.AWS_DEFAULT_REGION}}.compute.amazonaws.com << 'EOF'
           cd ${{ secrets.EC2_PROJECT_PATH }}
 
           # Check if any Docker containers are running
