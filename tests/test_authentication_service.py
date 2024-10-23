@@ -61,10 +61,10 @@ def test_login(mock_get_item, client):
 
     # Test successful login
     response = client.post('/login', json={
-        'email': 'test@example.com',
-        'password': 'password123'
-    })
-    assert response.status_code == 200
+        'email': 'admin@gmail.com',
+        'password': 'admin'
+    })      
+    assert response.status_code == 200   
     json_data = response.get_json()
     assert 'token' in json_data
 
@@ -83,7 +83,7 @@ def test_login(mock_get_item, client):
         'email': 'test@example.com',
         'password': 'password123'
     })
-    # assert response.status_code == 500
+    assert response.status_code == 500
     assert b'Login failed' in response.data
 
 # Test JWT token generation
