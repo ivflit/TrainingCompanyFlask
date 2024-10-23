@@ -30,7 +30,7 @@ def generate_token(email, role):
         raise ValueError("Role must be a string")
     
     expiration = datetime.now(timezone.utc) + timedelta(hours=1)
-    
+    print(expiration)
     # Convert expiration to UNIX timestamps
     algorithm = 'HS256'
     payload = {
@@ -38,6 +38,7 @@ def generate_token(email, role):
     'role': role,
     'exp': datetime.now(timezone.utc) + timedelta(hours=1)
     }
+    print(payload)
     token = jwt.encode(payload, JWT_SECRET,algorithm)
     return token
 # User registration
