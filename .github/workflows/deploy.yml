@@ -48,7 +48,6 @@ jobs:
     # Run tests for all services
     - name: Run tests
       run: |
-        echo "PYTHONPATH=$(pwd)" >> $GITHUB_ENV  # Add current working directory to PYTHONPATH
         python -m pytest tests/test_authentication_service.py || exit 1
         python -m pytest tests/test_course_service.py || exit 1
         python -m pytest tests/test_student_service.py || exit 1
