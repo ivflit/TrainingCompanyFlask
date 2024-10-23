@@ -24,6 +24,7 @@ jobs:
     # Install dependencies for all services
     - name: Install dependencies
       run: |
+        pip install pytest
         pip install -r api_gateway/requirements.txt
         pip install -r frontend/requirements.txt
         pip install -r microservices/authentication_service/requirements.txt
@@ -36,17 +37,17 @@ jobs:
     # Run tests for all services
     - name: Run tests
       run: |
-        pytest tests/test_authentication_service.py
-        pytest tests/test_course_service.py
-        pytest tests/test_student_service.py
-        pytest tests/test_trainer_service.py
-        pytest tests/test_api_gateway.py
-        pytest tests/test_frontend.py
+        pytest tests/test_authentication_service.py || exit 1
+        pytest tests/test_course_service.py || exit 1
+        pytest tests/test_student_service.py || exit 1
+        pytest tests/test_trainer_service.py || exit 1
+        pytest tests/test_api_gateway.py || exit 1
+        pytest tests/test_frontend.py || exit 1
 
   # Job to deploy to EC2
   deploy:
     runs-on: ubuntu-latest
-    needs: test
+    needs: test  # Ensure deployment only happens if tests pass
 
     steps:
     # Check out the repository
@@ -73,7 +74,7 @@ jobs:
 
           # Pull the latest code from GitHub
           echo "Pulling latest code..."
-          git pull origin main
+          git pull origin master  # Use 'master' to pull the latest from the main branch
 
           # Rebuild and run the containers
           echo "Running docker-compose..."
