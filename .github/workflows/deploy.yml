@@ -1,52 +1,83 @@
 name: CI/CD Pipeline
+
 on:
   push:
-    branches: 
-      - master
+    branches:
+      - main
 
 jobs:
-  continuous-integration:
+  # Job to run tests
+  test:
     runs-on: ubuntu-latest
-    steps:
-      # Step 1
-      - uses: actions/checkout@v2
-      # Step 2
-      - name: Set up Python 3.7
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.7
-      # Step 3
-      - name: Install dependencies
-        run: pip install -r requirements.txt
-      # Step 4
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ap-southeast-1
-      # Step 5
-      - name: Build Application and Run unit Test
-        run: python app.py & pytest
 
-  continuous-deployment:
-    runs-on: ubuntu-latest
-    needs: [continuous-integration]
-    if: github.ref == 'refs/heads/main'
     steps:
-     # Step 1
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ap-southeast-1
-     # Step 2
-      - name: Create CodeDeploy Deployment
-        id: deploy
-        run: |
-          aws deploy create-deployment \
-            --application-name application-name \
-            --deployment-group-name AppDeploymentGroupName \
-            --deployment-config-name CodeDeployDefault.OneAtATime \
-            --github-location repository=${{ github.repository }},commitId=${{ github.sha }}
+    # Check out the repository
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    # Set up Python environment
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.8'
+
+    # Install dependencies for all services
+    - name: Install dependencies
+      run: |
+        pip install -r api_gateway/requirements.txt
+        pip install -r frontend/requirements.txt
+        pip install -r microservices/authentication_service/requirements.txt
+        pip install -r microservices/booking_service/requirements.txt
+        pip install -r microservices/course_service/requirements.txt
+        pip install -r microservices/schedule_service/requirements.txt
+        pip install -r microservices/student_service/requirements.txt
+        pip install -r microservices/trainer_service/requirements.txt
+
+    # Run tests for all services
+    - name: Run tests
+      run: |
+        pytest tests/test_authentication_service.py
+        pytest tests/test_booking_service.py
+        pytest tests/test_course_service.py
+        pytest tests/test_schedule_service.py
+        pytest tests/test_student_service.py
+        pytest tests/test_trainer_service.py
+        pytest tests/test_api_gateway.py
+        pytest tests/test_frontend.py
+
+  # Job to deploy to EC2
+  deploy:
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+    # Check out the repository
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    # Set up SSH agent and add private key
+    - name: Setup SSH
+      uses: webfactory/ssh-agent@v0.5.3
+      with:
+        ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
+
+    # SSH into EC2 and deploy
+    - name: Deploy to EC2
+      run: |
+        ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+          cd ${{ secrets.EC2_PROJECT_PATH }}
+
+          # Check if any Docker containers are running
+          if [ "$(docker ps -q)" ]; then
+            echo "Stopping running containers..."
+            docker-compose down
+          fi
+
+          # Pull the latest code from GitHub
+          echo "Pulling latest code..."
+          git pull origin main
+
+          # Rebuild and run the containers
+          echo "Running docker-compose..."
+          docker-compose up --build -d
+        EOF
