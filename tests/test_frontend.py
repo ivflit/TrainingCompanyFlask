@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import patch
 from flask import session, request, url_for
-from ..frontend.app import app
+from frontend.app import app
 
 # Setup test client and environment variables
 @pytest.fixture
