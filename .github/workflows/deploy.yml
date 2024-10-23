@@ -49,12 +49,12 @@ jobs:
     - name: Run tests
       run: |
         echo "PYTHONPATH=$(pwd)" >> $GITHUB_ENV  # Add current working directory to PYTHONPATH
-        pytest tests/test_authentication_service.py || exit 1
-        pytest tests/test_course_service.py || exit 1
-        pytest tests/test_student_service.py || exit 1
-        pytest tests/test_trainer_service.py || exit 1
-        pytest tests/test_api_gateway.py || exit 1
-        pytest tests/test_frontend.py || exit 1
+        python -m pytest tests/test_authentication_service.py || exit 1
+        python -m pytest tests/test_course_service.py || exit 1
+        python -m pytest tests/test_student_service.py || exit 1
+        python -m pytest tests/test_trainer_service.py || exit 1
+        python -m pytest tests/test_api_gateway.py || exit 1
+        python -m pytest tests/test_frontend.py || exit 1
 
   # Job to deploy to EC2
   deploy:
