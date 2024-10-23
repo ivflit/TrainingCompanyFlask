@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import patch, MagicMock
 from flask import json
-from student_service.app import app
+from microservices.student_service.app import app
 
 class StudentServiceTestCase(unittest.TestCase):
 
