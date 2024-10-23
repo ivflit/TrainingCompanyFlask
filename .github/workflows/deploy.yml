@@ -35,6 +35,8 @@ jobs:
     # Install dependencies for all services
     - name: Install dependencies
       run: |
+        python3 -m venv venv
+        . venv/bin/activate
         pip install pytest
         pip install -r api_gateway/requirements.txt
         pip install -r frontend/requirements.txt
