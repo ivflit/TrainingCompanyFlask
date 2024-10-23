@@ -74,20 +74,15 @@ def login():
     email = data.get('email')
     password = data.get('password')
     try:
-        print(users_table)
         # Retrieve user from DynamoDB
         response = users_table.get_item(Key={'email': email})
-        print(response)
+        print(f"RESPONSE FROM USERS.GET: {response}")
         user = response.get('Item')
-        print(user)
+
         if user and bcrypt.checkpw(password.encode('utf-8'), user['password'].encode('utf-8')):
             # Successful login - generate JWT token
-            print("HIT")
-            print(type(email))
-            print(type(user['role']))
+            print(f"USER ROLE: {user['role']}")
             token = generate_token(email, user['role'])  # Include role in the token
-            print("TOKEN GENERATED")
-            print(token)
             return jsonify({'token': token}), 200
         else:
             return jsonify({'message': 'Invalid email or password'}), 401
