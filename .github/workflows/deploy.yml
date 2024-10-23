@@ -84,7 +84,7 @@ jobs:
       - name: Deploy to EC2
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
-            cd ${{ secrets.EC2_PROJECT_PATH }}
+            cd ${{ secrets.EC2_PROJECT_PATH }}/
 
             # Check if any Docker containers are running
             if [ "$(docker ps -q)" ]; then
