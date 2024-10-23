@@ -59,6 +59,7 @@ def test_login(mock_get_item, client):
         }
     }
 
+    print("AA - Test successful login with correct credentials - AA ")
     # Test successful login with correct credentials
     response = client.post('/login', json={
         'email': 'admin@gmail.com',  # Match the email in mock
@@ -68,6 +69,8 @@ def test_login(mock_get_item, client):
     json_data = response.get_json()
     assert 'token' in json_data
 
+    print("BB - # Test login with invalid credentials (wrong password) - BB ")
+
     # Test login with invalid credentials (wrong password)
     response = client.post('/login', json={
         'email': 'admin@gmail.com',  # Match the email in mock
@@ -75,6 +78,8 @@ def test_login(mock_get_item, client):
     })
     assert response.status_code == 401
     assert b'Invalid email or password' in response.data
+    
+    print("CC - # Test login with invalid credentials (non-existent user) - CC")
 
     # Test login with invalid credentials (non-existent user)
     mock_get_item.return_value = {'Item': None}  # Simulate user not found
