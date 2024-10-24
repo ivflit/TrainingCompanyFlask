@@ -1,5 +1,20 @@
 # Training Management System
 
+## Table of Contents
+- [Overview](#overview)
+- [Microservices](#microservices)
+- [Technologies Used](#technologies-used)
+- [Prerequisites](#prerequisites)
+- [Environment Variables](#environment-variables)
+- [Setup Instructions](#setup-instructions)
+  - [Clone the Repository](#clone-the-repository)
+  - [Build and Run Services](#build-and-run-services)
+- [Running Tests](#running-tests)
+- [CI/CD Pipeline](#cicd-pipeline)
+- [Deployment](#deployment)
+  - [Setting Up EC2 Instance](#setting-up-ec2-instance)
+  - [Manual Deployment](#manual-deployment)
+
 ## Overview
 The Training Management System is a microservices-based application designed to manage various aspects of training programs, including students, trainers, courses, and bookings. The system is composed of multiple services, each responsible for a specific domain, allowing for scalability and maintainability.
 
